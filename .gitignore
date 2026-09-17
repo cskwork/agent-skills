@@ -7,3 +7,4 @@ node_modules/
 .impeccable/review/
 .impeccable/build/
 .impeccable/decision-payload.json
+.impeccable/questions/
