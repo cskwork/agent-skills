@@ -49,7 +49,10 @@ npx skills add cskwork/agent-skills -g -s my-skill -a claude-code codex opencode
 - `superpm`, `streamdeck-agent-cockpit`, `skill-usage-stats`, `naver-cloud-vpn`, `aside-browser`
   also exist as standalone repos (`cskwork/*-skill`). The copies here are the ones actually
   in use; the standalone repos are publishing artifacts and may lag.
-- Skills served from `cskwork/pi-setup` (Pi harness) are not duplicated here.
+- Most-used skills that also ship in `cskwork/pi-setup` (Pi harness) — `sdlc-kit`, `verification-before-completion`,
+  `call-agent`, `browser-qa`, `create-verification-skill`, `verify`, `impeccable`, `gpt-image-2`, `agent-browser` —
+  are canonical **here**; Claude/Codex/OpenCode link to this repo, Pi still reads its own copy in pi-setup.
+  Verification artifacts (`.verify/`, `.impeccable/`) are intentionally not included.
 
 ## 한국어
 

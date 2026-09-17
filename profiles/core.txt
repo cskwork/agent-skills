@@ -7,3 +7,9 @@ skill-usage-stats
 sync-skill
 unslop
 verification-planning
+sdlc-kit
+verification-before-completion
+call-agent
+browser-qa
+create-verification-skill
+verify

@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>verify — 초록 빌드는 검증이 아니다 · Agent Skill</title>
+<meta name="description" content="빌드 성공은 컴파일러가 만족했다는 증거일 뿐이다. verify는 빌드·정적검사·클린코드·시나리오 API QA·보고 5개 게이트로 재실행 가능한 증거(receipt)를 남기는 agent skill이다.">
+<meta property="og:title" content="verify — an agent skill that refuses to call a green build &quot;verified&quot;">
+<meta property="og:description" content="Five gates, three verdicts, and receipts another person can re-run. Reusable token module, payload variant matrix, plain-language report.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://cskwork.github.io/verify-skill/">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧾</text></svg>">
+<style>
+  :root{
+    --bg:#0b0d16;
+    --ink:#f2f4fb;
+    --ink-dim:#b3bad2;
+    --ink-faint:#8990ab;
+    --glass:rgba(255,255,255,.055);
+    --glass-2:rgba(255,255,255,.085);
+    --edge:rgba(255,255,255,.11);
+    --pass:#4fd18b;
+    --fail:#ff6f7d;
+    --block:#ffc861;
+    --accent:#8d7bff;
+    --accent-2:#4bc5f5;
+    --mono:ui-monospace,SFMono-Regular,"SF Mono",Menlo,Consolas,monospace;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0;
+    font-family:-apple-system,BlinkMacSystemFont,"Pretendard","Segoe UI",Roboto,"Helvetica Neue",sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.7;
+    -webkit-font-smoothing:antialiased;
+    overflow-x:hidden;
+  }
+  /* Ambient gradient field. Kept behind a solid-ish layer so glass text stays legible. */
+  body::before{
+    content:"";position:fixed;inset:-30vh -10vw;z-index:-2;
+    background:
+      radial-gradient(42vw 42vw at 12% 8%,rgba(141,123,255,.30),transparent 62%),
+      radial-gradient(38vw 38vw at 88% 14%,rgba(75,197,245,.22),transparent 62%),
+      radial-gradient(46vw 46vw at 50% 104%,rgba(79,209,139,.16),transparent 62%);
+    filter:blur(28px);
+  }
+  body::after{
+    content:"";position:fixed;inset:0;z-index:-1;pointer-events:none;
+    background:linear-gradient(180deg,rgba(11,13,22,.42),rgba(11,13,22,.80));
+  }
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+
+  /* ---------- top bar ---------- */
+  header.bar{
+    position:sticky;top:0;z-index:50;
+    backdrop-filter:blur(16px) saturate(150%);
+    -webkit-backdrop-filter:blur(16px) saturate(150%);
+    background:rgba(11,13,22,.72);
+    border-bottom:1px solid var(--edge);
+  }
+  .bar-in{display:flex;align-items:center;gap:16px;padding:12px 0}
+  .brand{display:flex;align-items:center;gap:9px;font-weight:700;letter-spacing:-.01em}
+  .brand code{font-family:var(--mono);font-size:1.06rem;color:var(--ink)}
+  .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--pass);box-shadow:0 0 14px var(--pass)}
+  .bar-sp{flex:1}
+  .bar a.gh{
+    color:var(--ink-dim);text-decoration:none;font-size:.9rem;
+    padding:7px 13px;border:1px solid var(--edge);border-radius:9px;
+    background:var(--glass);transition:.18s;
+  }
+  .bar a.gh:hover{color:var(--ink);border-color:var(--accent);background:var(--glass-2)}
+  .lang{display:flex;border:1px solid var(--edge);border-radius:9px;overflow:hidden;background:var(--glass)}
+  .lang button{
+    all:unset;cursor:pointer;padding:7px 13px;font-size:.82rem;font-weight:700;
+    color:var(--ink-faint);transition:.18s;letter-spacing:.04em;
+  }
+  .lang button[aria-pressed="true"]{background:var(--accent);color:#fff}
+  .lang button:hover:not([aria-pressed="true"]){color:var(--ink)}
+
+  /* ---------- hero ---------- */
+  .hero{padding:88px 0 60px;text-align:center}
+  .eyebrow{
+    display:inline-block;font-family:var(--mono);font-size:.76rem;letter-spacing:.16em;
+    text-transform:uppercase;color:var(--accent-2);
+    border:1px solid var(--edge);border-radius:999px;padding:6px 15px;
+    background:var(--glass);margin-bottom:26px;
+  }
+  h1{
+    font-size:clamp(2.1rem,5.6vw,3.7rem);line-height:1.14;margin:0 0 20px;
+    letter-spacing:-.03em;font-weight:800;
+  }
+  h1 .strike{text-decoration:line-through;text-decoration-color:var(--fail);text-decoration-thickness:.09em;opacity:.62}
+  .lede{font-size:clamp(1.02rem,2.1vw,1.2rem);color:var(--ink-dim);max-width:660px;margin:0 auto 16px}
+  .lede strong{color:var(--ink)}
+  .cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:34px}
+  .btn{
+    display:inline-block;text-decoration:none;font-weight:650;font-size:.95rem;
+    padding:13px 24px;border-radius:11px;transition:.2s;border:1px solid transparent;
+  }
+  .btn-1{background:linear-gradient(135deg,var(--accent),#6f5bef);color:#fff;box-shadow:0 8px 26px rgba(141,123,255,.34)}
+  .btn-1:hover{transform:translateY(-2px);box-shadow:0 12px 32px rgba(141,123,255,.46)}
+  .btn-2{background:var(--glass);color:var(--ink);border-color:var(--edge);backdrop-filter:blur(10px)}
+  .btn-2:hover{border-color:var(--accent-2);background:var(--glass-2)}
+
+  /* ---------- glass ---------- */
+  .card{
+    background:var(--glass);
+    border:1px solid var(--edge);
+    border-radius:17px;
+    backdrop-filter:blur(15px) saturate(140%);
+    -webkit-backdrop-filter:blur(15px) saturate(140%);
+    padding:26px 26px 24px;
+  }
+  section{padding:52px 0}
+  h2{
+    font-size:clamp(1.4rem,3vw,1.95rem);letter-spacing:-.02em;margin:0 0 10px;font-weight:750;
+  }
+  .sub{color:var(--ink-dim);margin:0 0 28px;max-width:720px}
+  .grid{display:grid;gap:16px}
+  .g2{grid-template-columns:repeat(auto-fit,minmax(290px,1fr))}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(232px,1fr))}
+
+  /* ---------- gates ---------- */
+  .gate{display:flex;gap:15px;align-items:flex-start}
+  .gate .num{
+    flex:0 0 34px;height:34px;border-radius:10px;display:grid;place-items:center;
+    font-family:var(--mono);font-weight:700;font-size:.95rem;
+    background:linear-gradient(135deg,rgba(141,123,255,.34),rgba(75,197,245,.24));
+    border:1px solid var(--edge);
+  }
+  .gate h3{margin:2px 0 5px;font-size:1.03rem;font-weight:700}
+  .gate p{margin:0;color:var(--ink-dim);font-size:.92rem}
+  .gate .receipt{
+    display:block;margin-top:9px;font-family:var(--mono);font-size:.78rem;
+    color:var(--ink-faint);border-left:2px solid var(--edge);padding-left:9px;
+  }
+
+  /* ---------- verdicts ---------- */
+  .verdict{text-align:center;padding:24px 18px}
+  .verdict .tag{
+    font-family:var(--mono);font-weight:800;font-size:1.02rem;letter-spacing:.07em;
+    padding:6px 15px;border-radius:8px;display:inline-block;margin-bottom:13px;
+  }
+  .v-pass .tag{background:rgba(79,209,139,.15);color:var(--pass);border:1px solid rgba(79,209,139,.36)}
+  .v-fail .tag{background:rgba(255,111,125,.15);color:var(--fail);border:1px solid rgba(255,111,125,.36)}
+  .v-block .tag{background:rgba(255,200,97,.15);color:var(--block);border:1px solid rgba(255,200,97,.36)}
+  .verdict p{margin:0;font-size:.92rem;color:var(--ink-dim)}
+  .v-block{box-shadow:0 0 0 1px rgba(255,200,97,.22)}
+
+  /* ---------- code ---------- */
+  pre{
+    margin:0;background:rgba(0,0,0,.42);border:1px solid var(--edge);border-radius:12px;
+    padding:17px 19px;overflow-x:auto;font-family:var(--mono);font-size:.845rem;line-height:1.62;
+    color:#dfe4f5;
+  }
+  pre .c{color:#6f7899}
+  pre .k{color:var(--accent-2)}
+  pre .s{color:var(--pass)}
+  code.inl{
+    font-family:var(--mono);font-size:.88em;background:rgba(255,255,255,.075);
+    padding:.13em .42em;border-radius:5px;border:1px solid var(--edge);
+  }
+
+  /* ---------- table ---------- */
+  .tbl{width:100%;border-collapse:collapse;font-size:.9rem}
+  .tbl th,.tbl td{text-align:left;padding:11px 13px;border-bottom:1px solid var(--edge)}
+  .tbl th{font-size:.76rem;letter-spacing:.09em;text-transform:uppercase;color:var(--ink-faint);font-weight:700}
+  .tbl td:first-child{font-family:var(--mono);color:var(--accent-2);white-space:nowrap}
+  .tbl tr:last-child td{border-bottom:none}
+
+  /* ---------- selftest ---------- */
+  .term{
+    background:rgba(0,0,0,.5);border:1px solid var(--edge);border-radius:13px;overflow:hidden;
+  }
+  .term .top{
+    display:flex;gap:7px;align-items:center;padding:11px 15px;
+    border-bottom:1px solid var(--edge);background:rgba(255,255,255,.035);
+  }
+  .term .top i{width:11px;height:11px;border-radius:50%;display:block}
+  .term .top i:nth-child(1){background:#ff5f57}
+  .term .top i:nth-child(2){background:#febc2e}
+  .term .top i:nth-child(3){background:#28c840}
+  .term .top span{margin-left:8px;font-family:var(--mono);font-size:.78rem;color:var(--ink-faint)}
+  .term pre{border:none;border-radius:0;background:transparent;font-size:.82rem}
+  .ok{color:var(--pass)}
+
+  .note{
+    border-left:3px solid var(--accent);padding:2px 0 2px 16px;color:var(--ink-dim);
+    font-size:.93rem;margin:22px 0 0;
+  }
+  ul.tick{list-style:none;padding:0;margin:0}
+  ul.tick li{padding-left:25px;position:relative;margin-bottom:10px;color:var(--ink-dim);font-size:.93rem}
+  ul.tick li::before{
+    content:"";position:absolute;left:3px;top:.62em;width:8px;height:8px;border-radius:50%;
+    background:var(--pass);box-shadow:0 0 9px rgba(79,209,139,.7);
+  }
+  footer{
+    border-top:1px solid var(--edge);margin-top:44px;padding:34px 0 52px;
+    color:var(--ink-faint);font-size:.87rem;text-align:center;
+  }
+  footer a{color:var(--ink-dim)}
+  footer a:hover{color:var(--accent-2)}
+  @media (max-width:560px){
+    .hero{padding:56px 0 40px}
+    .card{padding:20px}
+    .bar-in{gap:9px}
+    .bar a.gh{display:none}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap bar-in">
+    <div class="brand"><span class="dot"></span><code>verify</code></div>
+    <div class="bar-sp"></div>
+    <a class="gh" href="https://github.com/cskwork/verify-skill" target="_blank" rel="noopener">GitHub ↗</a>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-lang="ko" aria-pressed="true">KO</button>
+      <button type="button" data-lang="en" aria-pressed="false">EN</button>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<div class="wrap hero">
+  <span class="eyebrow" data-i18n="eyebrow">Agent Skill · Claude Code · Codex · Cursor</span>
+  <h1><span class="strike" data-i18n="h1a">초록 빌드</span><br><span data-i18n="h1b">는 검증이 아니다</span></h1>
+  <p class="lede" data-i18n="lede1"></p>
+  <p class="lede" data-i18n="lede2"></p>
+  <div class="cta">
+    <a class="btn btn-1" href="#install" data-i18n="cta1">설치하기</a>
+    <a class="btn btn-2" href="https://github.com/cskwork/verify-skill" target="_blank" rel="noopener" data-i18n="cta2">GitHub에서 보기</a>
+  </div>
+</div>
+
+<section class="wrap" id="gates">
+  <h2 data-i18n="gatesH">5개 게이트</h2>
+  <p class="sub" data-i18n="gatesS"></p>
+  <div class="grid g2">
+    <div class="card gate"><div class="num">1</div><div>
+      <h3 data-i18n="g1t">빌드</h3><p data-i18n="g1p"></p>
+      <span class="receipt" data-i18n="g1r"></span></div></div>
+    <div class="card gate"><div class="num">2</div><div>
+      <h3 data-i18n="g2t">정적검사</h3><p data-i18n="g2p"></p>
+      <span class="receipt" data-i18n="g2r"></span></div></div>
+    <div class="card gate"><div class="num">3</div><div>
+      <h3 data-i18n="g3t">클린코드</h3><p data-i18n="g3p"></p>
+      <span class="receipt" data-i18n="g3r"></span></div></div>
+    <div class="card gate"><div class="num">4</div><div>
+      <h3 data-i18n="g4t">시나리오</h3><p data-i18n="g4p"></p>
+      <span class="receipt" data-i18n="g4r"></span></div></div>
+    <div class="card gate"><div class="num">5</div><div>
+      <h3 data-i18n="g5t">보고</h3><p data-i18n="g5p"></p>
+      <span class="receipt" data-i18n="g5r"></span></div></div>
+    <div class="card gate"><div class="num">🧾</div><div>
+      <h3 data-i18n="grt">receipt</h3><p data-i18n="grp"></p>
+      <span class="receipt" data-i18n="grr"></span></div></div>
+  </div>
+</section>
+
+<section class="wrap" id="verdicts">
+  <h2 data-i18n="vH">판정은 세 가지</h2>
+  <p class="sub" data-i18n="vS"></p>
+  <div class="grid g3">
+    <div class="card verdict v-pass"><span class="tag">PASS</span><p data-i18n="vPass"></p></div>
+    <div class="card verdict v-fail"><span class="tag">FAIL</span><p data-i18n="vFail"></p></div>
+    <div class="card verdict v-block"><span class="tag">BLOCKED</span><p data-i18n="vBlock"></p></div>
+  </div>
+  <p class="note" data-i18n="vNote"></p>
+</section>
+
+<section class="wrap" id="token">
+  <h2 data-i18n="tH">재사용 토큰 모듈</h2>
+  <p class="sub" data-i18n="tS"></p>
+  <div class="grid g2">
+    <div class="card">
+<pre><span class="c"># <span data-i18n="tc1">신선하면 캐시, 아니면 발급</span></span>
+TOKEN=$(scripts/token.sh)
+
+<span class="c"># <span data-i18n="tc2">헤더 형태로</span></span>
+scripts/token.sh <span class="k">--header</span>
+
+<span class="c"># 401 <span data-i18n="tc3">이후 강제 재발급</span></span>
+scripts/token.sh <span class="k">--refresh</span>
+
+<span class="c"># <span data-i18n="tc4">캐시 상태만 확인</span></span>
+scripts/token.sh <span class="k">--status</span></pre>
+    </div>
+    <div class="card">
+      <table class="tbl">
+        <thead><tr><th data-i18n="tmMode">모드</th><th data-i18n="tmWhen">쓰는 경우</th></tr></thead>
+        <tbody>
+          <tr><td>static</td><td data-i18n="tm1"></td></tr>
+          <tr><td>http_get</td><td data-i18n="tm2"></td></tr>
+          <tr><td>http_post_json</td><td data-i18n="tm3"></td></tr>
+          <tr><td>http_post_form</td><td data-i18n="tm4"></td></tr>
+          <tr><td>command</td><td data-i18n="tm5"></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <p class="note" data-i18n="tNote"></p>
+</section>
+
+<section class="wrap" id="variants">
+  <h2 data-i18n="pH">payload 변형 매트릭스</h2>
+  <p class="sub" data-i18n="pS"></p>
+  <div class="card">
+    <table class="tbl">
+      <thead><tr><th data-i18n="pvV">변형</th><th data-i18n="pvP">증명하는 것</th></tr></thead>
+      <tbody>
+        <tr><td>happy</td><td data-i18n="pv1"></td></tr>
+        <tr><td>boundary</td><td data-i18n="pv2"></td></tr>
+        <tr><td>negative</td><td data-i18n="pv3"></td></tr>
+        <tr><td>regression</td><td data-i18n="pv4"></td></tr>
+        <tr><td>authz</td><td data-i18n="pv5"></td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note" data-i18n="pNote"></p>
+</section>
+
+<section class="wrap" id="report">
+  <h2 data-i18n="rH">wait-what 보고 스타일</h2>
+  <p class="sub" data-i18n="rS"></p>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0;font-size:1rem" data-i18n="rRule">세 가지 규칙</h3>
+      <ul class="tick">
+        <li data-i18n="rr1"></li>
+        <li data-i18n="rr2"></li>
+        <li data-i18n="rr3"></li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-size:1rem" data-i18n="rMost">가장 값진 항목</h3>
+      <pre><span class="k">## <span data-i18n="rmH">검증하지 않은 것</span></span>
+1. <span data-i18n="rmL"></span></pre>
+      <p style="margin:15px 0 0;color:var(--ink-dim);font-size:.9rem" data-i18n="rmP"></p>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="selftest">
+  <h2 data-i18n="sH">하네스 자체를 검증한다</h2>
+  <p class="sub" data-i18n="sS"></p>
+  <div class="term">
+    <div class="top"><i></i><i></i><i></i><span>scripts/selftest.sh</span></div>
+<pre>  <span class="ok">ok</span>    <span data-i18n="s1">토큰 발급됨</span>
+  <span class="ok">ok</span>    <span data-i18n="s2">두 번째 호출은 캐시에서 온다</span>
+  <span class="ok">ok</span>    <span data-i18n="s3">기대 status가 틀리면 FAIL이 된다</span>
+  <span class="ok">ok</span>    <span data-i18n="s4">인증 없는 호출은 401로 거절된다</span>
+  <span class="ok">ok</span>    <span data-i18n="s5">기대값을 안 적으면 통과하지 않는다</span>
+  <span class="ok">ok</span>    <span data-i18n="s6">모든 receipt에 토큰이 없다</span>
+  <span class="ok">ok</span>    <span data-i18n="s7">opaque 토큰이 완전히 마스킹된다</span>
+  <span class="ok">ok</span>    <span data-i18n="s8">정적검사 3건이 모두 실행됐다</span>
+  <span class="ok">ok</span>    <span data-i18n="s9">금지 호스트 호출이 거부된다</span>
+
+<span class="ok">self-test: 22/22 checks passed</span></pre>
+  </div>
+  <p class="note" data-i18n="sNote"></p>
+</section>
+
+<section class="wrap" id="install">
+  <h2 data-i18n="iH">설치</h2>
+  <p class="sub" data-i18n="iS"></p>
+  <div class="grid g2">
+    <div class="card">
+      <h3 style="margin-top:0;font-size:1rem" data-i18n="i1H">1. 설치하고 실행</h3>
+<pre>git clone https://github.com/cskwork/verify-skill \
+  ~/.claude/skills/verify
+
+cd ~/.claude/skills/verify
+scripts/selftest.sh</pre>
+      <p style="margin:15px 0 0;color:var(--ink-dim);font-size:.9rem" data-i18n="i1P"></p>
+    </div>
+    <div class="card">
+      <h3 style="margin-top:0;font-size:1rem" data-i18n="i2H">2. 내 스택에 붙이기</h3>
+<pre>cp adapters/_template.env \
+  /path/to/repo/.verify/adapter.env
+
+$EDITOR /path/to/repo/.verify/adapter.env</pre>
+      <p style="margin:15px 0 0;color:var(--ink-dim);font-size:.9rem" data-i18n="i2P"></p>
+    </div>
+  </div>
+  <p class="note" data-i18n="iNote"></p>
+</section>
+
+</main>
+
+<footer class="wrap">
+  <p style="margin:0 0 9px" data-i18n="fCredit"></p>
+  <p style="margin:0">
+    <a href="https://github.com/cskwork/verify-skill" target="_blank" rel="noopener">cskwork/verify-skill</a>
+    · MIT ·
+    <a href="https://github.com/cskwork/verify-skill/blob/main/docs/example-report.md" target="_blank" rel="noopener" data-i18n="fExample">예시 보고서</a>
+  </p>
+</footer>
+
+<script>
+const I18N = {
+  ko: {
+    eyebrow:"Agent Skill · Claude Code · Codex · Cursor",
+    h1a:"초록 빌드는", h1b:"검증이 아니다",
+    lede1:"빌드 성공은 <strong>컴파일러가 만족했다는 증거</strong>일 뿐이다. 엔드포인트가 실제 payload를 받는지, 쿼리가 맞는 행을 돌려주는지, 변경이 호출자를 깨뜨리지 않았는지는 증명하지 않는다.",
+    lede2:"<code class=\"inl\">verify</code>는 그 간극을 <strong>receipt</strong>로 메운다. 다른 사람이 그대로 재실행해 같은 판정에 도달할 수 있는 파일이다. receipt가 없으면 통과도 없다.",
+    cta1:"설치하기", cta2:"GitHub에서 보기",
+
+    gatesH:"5개 게이트",
+    gatesS:"최근 변경사항에 대해 순서대로 실행한다. 각 게이트는 디스크에 남는 산출물로 끝난다.",
+    g1t:"빌드", g1p:"변경한 코드가 컴파일되는가?", g1r:"명령 · exit code · 출력 끝부분",
+    g2t:"정적검사", g2p:"이 레포가 이미 쓰는 타입·린트·스키마 검사를 통과하는가? 새로 도구를 들이지 않는다.", g2r:"도구별 exit code · 지적 건수",
+    g3t:"클린코드", g3p:"이 diff를 승인할 수 있는가? diff만 본다. 차단 사유는 7가지로 못 박혀 있다.", g3r:"변경 파일당 한 줄, 없으면 none 명시",
+    g4t:"시나리오", g4p:"변경이 닿은 각 API가 실제로, 여러 payload 변형에서 제대로 동작하는가?", g4r:"변형별 요청·응답 원문",
+    g5t:"보고", g5p:"동료가 읽고 무엇이 증명됐는지 알 수 있는가? 한 장으로 끝낸다.", g5r:"report.md",
+    grt:"receipt", grp:"게이트가 통과했다고 주장하려면 그에 해당하는 파일이 있어야 한다. 파일 없는 주장은 주장이 아니다.", grr:".verify/<run>/receipts/",
+
+    vH:"판정은 세 가지",
+    vS:"세 번째가 핵심이다. 실행하지 못한 게이트를 초록으로 보이게 만드는 것이 이 스킬이 막으려는 실패다.",
+    vPass:"실행했고, receipt가 기대한 결과를 보여준다.",
+    vFail:"실행했고, receipt가 잘못된 무언가를 보여준다.",
+    vBlock:"실행하지 못했다. 자격증명 없음, 의존 서비스 불가, 로컬 런타임 부재.",
+    vNote:"BLOCKED는 절대 PASS가 아니다. BLOCKED로 보고하고, 그것을 풀 수 있는 단 하나를 지목한다. 그리고 기존에 이미 깨져 있던 실패와 이번 diff가 만든 회귀를 반드시 분리한다.",
+
+    tH:"재사용 토큰 모듈",
+    tS:"보호된 엔드포인트에는 자격증명이 필요하고, API 검증이 멈추는 지점은 대개 여기다.",
+    tc1:"신선하면 캐시, 아니면 발급", tc2:"헤더 형태로", tc3:"이후 강제 재발급", tc4:"캐시 상태만 확인",
+    tmMode:"모드", tmWhen:"쓰는 경우",
+    tm1:"사람이나 CI가 토큰을 넣어줄 수 있을 때",
+    tm2:"dev 토큰 엔드포인트가 query 파라미터를 받을 때",
+    tm3:"JSON 로그인 엔드포인트",
+    tm4:"OAuth2 또는 form 로그인",
+    tm5:"그 외 전부 — 브라우저 로그인 스크립트, OAuth device flow, aws sts, 오프라인 서명 스크립트",
+    tNote:"신원별로 캐시한다. 변형 30개 suite가 로그인 1회로 끝나고, 관리자에서 일반 사용자로 바꿀 때 관리자 토큰을 조용히 재사용하지 않는다. 자격증명은 디스크에 닿기 전에 마스킹된다.",
+
+    pH:"payload 변형 매트릭스",
+    pS:"호출 한 번은 거의 아무것도 증명하지 않는다. 엔드포인트당 최소 3종이 바닥이다.",
+    pvV:"변형", pvP:"증명하는 것",
+    pv1:"실제 유효한 payload에서 문서화된 계약이 지켜진다",
+    pv2:"빈 값·최댓값·null·유니코드 같은 경계가 제대로 동작한다",
+    pv3:"잘못된 입력이 500이 아니라 4xx로 거절된다",
+    pv4:"버그 리포트의 그 payload가 이제 통과한다 (버그 수정일 때)",
+    pv5:"잘못된 역할·테넌트의 같은 호출이 거절된다 (권한 변경일 때)",
+    pNote:"payload 출처는 4단계 사다리를 순서대로 밟는다. 사용자 제공 → 저장된 fixture → 실제 DB 행 → 합성. 보고서는 어느 단계까지 갔는지 밝힌다. 합성 payload는 계약이 아니라 당신의 상상을 시험하기 때문이다.",
+
+    rH:"wait-what 보고 스타일",
+    rS:"게이트 5가 최종 산출물이다. 제대로 검증했어도 설명이 나쁘면 읽는 사람은 여전히 감을 못 잡는다. 전제는 하나 — 읽는 사람은 맥락을 놓쳤다.",
+    rRule:"세 가지 규칙",
+    rr1:"요약이 아니라 다시 설명한다. 판정을 먼저 쓰고 증거를 뒤에 붙인다.",
+    rr2:"단순화 기술영어(ASD-STE100). 한 문장에 한 생각, 능동태, 정의하지 않은 전문용어 금지.",
+    rr3:"프로젝트의 어휘를 쓴다. CONTEXT.md·용어집·ADR에서 팀이 쓰는 표제어를 가져온다.",
+    rMost:"가장 값진 항목",
+    rmH:"검증하지 않은 것",
+    rmL:"관리자 화면. 데이터가 있는 관리자 계정이 없었다.",
+    rmP:"간극이 보고서에서 가장 값진 줄이다. 간극을 숨긴 보고서를 한 번 믿은 사람은 그 뒤로 보고서를 믿지 않는다.",
+
+    sH:"하네스 자체를 검증한다",
+    sS:"임시 서버를 띄워 5개 게이트를 다 돌린 뒤, 하네스가 제대로 판별하는지를 검사한다.",
+    s1:"토큰 발급됨", s2:"두 번째 호출은 캐시에서 온다", s3:"기대 status가 틀리면 FAIL이 된다",
+    s4:"인증 없는 호출은 401로 거절된다", s5:"기대값을 안 적으면 통과하지 않는다",
+    s6:"모든 receipt에 토큰이 없다", s7:"opaque 토큰이 완전히 마스킹된다", s8:"정적검사 3건이 모두 실행됐다", s9:"금지 호스트 호출이 거부된다",
+    sNote:"가장 값진 검사는 부정 검사다. 기대 status가 틀리면 FAIL이 나오고, 기대값을 안 적은 변형은 통과하지 않는다는 것 — 이것이 하네스가 판별력을 가졌다는 증거이고, 초록 결과를 믿을 유일한 근거다. 이 검사들을 쓰면서 실제 결함 3건을 잡았다. adapter 미로딩, 백그라운드 프로세스의 pipe 점유, 그리고 BSD sed에서 opaque 토큰 뒷부분을 유출하던 마스킹 버그.",
+
+    iH:"설치",
+    iS:"curl, jq, bash만 있으면 된다. macOS 기본 bash 3.2와 Linux에서 검증했다.",
+    i1H:"1. 설치하고 실행",
+    i1P:"그다음 \"최근 작업 검증해줘\" 또는 /verify. SKILL.md를 읽는 모든 하네스에서 동작한다 — Claude Code, Codex, Cursor, Gemini CLI, OpenCode.",
+    i2H:"2. 내 스택에 붙이기",
+    i2P:"게이트는 스택에 의존하지 않는다. adapter 파일 하나가 게이트로는 알 수 없는 사실 6개를 담는다. 빌드 명령, 검사 목록, 기동 방법, health 확인, 토큰 발급, 테스트 계정 생성.",
+    iNote:"adapters/spring-mybatis.md는 실제 Spring Boot 3 + MyBatis 서비스에 이 스킬을 돌리며 얻은 함정 7개를 담은 완성 예시다. 모두 명확한 에러가 아니라 잘못된 판정을 만드는 종류다.",
+
+    fCredit:"보고 스타일은 Matt Pocock의 wait-what을, 스킬 구조는 writing-great-skills를 따랐다.",
+    fExample:"예시 보고서"
+  },
+  en: {
+    eyebrow:"Agent Skill · Claude Code · Codex · Cursor",
+    h1a:"A green build", h1b:"is not proof",
+    lede1:"A green build proves <strong>the compiler was satisfied</strong>. It does not prove the endpoint accepts the real payload, that the query returns the right rows, or that the change did not break the caller.",
+    lede2:"<code class=\"inl\">verify</code> closes that gap with <strong>receipts</strong>: files another person can re-run to reach the same verdict. No receipt, no pass.",
+    cta1:"Install", cta2:"View on GitHub",
+
+    gatesH:"Five gates",
+    gatesS:"Run in order over your recent changes. Each one ends on an artifact written to disk.",
+    g1t:"Build", g1p:"Does the changed code assemble?", g1r:"command · exit code · output tail",
+    g2t:"Static", g2p:"Does it pass the checks this repo already owns — type, lint, schema? No new tools introduced.", g2r:"per-tool exit code · finding counts",
+    g3t:"Clean code", g3p:"Is this diff code you would approve? Judge the diff only. Seven findings block; everything else is a note.", g3r:"one row per changed file, `none` written out",
+    g4t:"Scenario", g4p:"Does each touched API behave live, across payload variants?", g4r:"raw request and response per variant",
+    g5t:"Report", g5p:"Would a colleague understand what you proved? One page.", g5r:"report.md",
+    grt:"receipt", grp:"To claim a gate passed there must be a file that shows it. A claim with no file is not a claim.", grr:".verify/<run>/receipts/",
+
+    vH:"Three verdicts",
+    vS:"The third one is the point. Making an unrun gate look green is the failure this skill exists to prevent.",
+    vPass:"It ran, and the receipt shows the expected result.",
+    vFail:"It ran, and the receipt shows something wrong.",
+    vBlock:"It could not run. Missing credential, unreachable dependency, no local runtime.",
+    vNote:"BLOCKED is never PASS. Report it as BLOCKED and name the one thing that would unblock it. And always separate a failure that already existed at the base from a regression this diff introduced.",
+
+    tH:"The reusable token module",
+    tS:"Protected endpoints need a credential, and getting one is where API verification usually stalls.",
+    tc1:"cached when fresh, acquired when not", tc2:"as a header", tc3:"force a new one after a", tc4:"cache state only",
+    tmMode:"Mode", tmWhen:"Use when",
+    tm1:"A human or CI can supply a token",
+    tm2:"A dev-token endpoint takes query params",
+    tm3:"A JSON login endpoint",
+    tm4:"An OAuth2 or form login",
+    tm5:"Anything else — a browser login script, an OAuth device flow, aws sts, an offline signing script",
+    tNote:"It caches per identity, so a thirty-variant suite costs one login, and switching from an admin to a member does not silently reuse the admin's token. Credentials are redacted before anything reaches disk.",
+
+    pH:"Payload variant matrix",
+    pS:"One call proves almost nothing. Three per endpoint is the floor.",
+    pvV:"Variant", pvP:"What it proves",
+    pv1:"The documented contract holds for a real, valid payload",
+    pv2:"Edges behave — empty, maximum, null, unicode",
+    pv3:"Bad input is refused with a 4xx, not a 500",
+    pv4:"The payload from the bug report now passes (on a bug fix)",
+    pv5:"The same call as the wrong role or tenant is refused (on a permission change)",
+    pNote:"Payloads come off a four-rung ladder, in order: user-supplied, saved fixture, a real database row, then synthesized. The report says which rung it reached, because a synthesized payload tests your imagination rather than the contract.",
+
+    rH:"The wait-what report style",
+    rS:"Gate 5 is the deliverable. A correct verification described badly still leaves the reader guessing. The premise is simple — the reader lost the thread.",
+    rRule:"Three rules",
+    rr1:"Re-pitch, do not recap. Lead with the verdict; the evidence follows it.",
+    rr2:"Simplified Technical English (ASD-STE100). One idea per sentence, active voice, no undefined jargon.",
+    rr3:"Use the project's own words. Take the headword the team uses from CONTEXT.md, the glossary, or the ADRs.",
+    rMost:"The most valuable section",
+    rmH:"What I did not verify",
+    rmL:"The admin view. I had no admin account that had any data.",
+    rmP:"The gap is the most valuable line in the report. A reader who trusts a report that hid a gap stops trusting reports.",
+
+    sH:"It verifies its own harness",
+    sS:"All five gates run against a throwaway server, then the harness itself is checked for whether it actually discriminates.",
+    s1:"token acquired", s2:"second call hits the cache", s3:"wrong expected status is a FAIL",
+    s4:"no-auth call is refused with 401", s5:"no expectation stated is a FAIL",
+    s6:"token absent from every receipt", s7:"opaque token fully redacted", s8:"all 3 static checks ran", s9:"forbidden host is refused",
+    sNote:"The most valuable checks are the negative ones: that a wrong expected status produces FAIL, and that a variant with no stated expectation does not pass. Those prove the harness discriminates, which is the only reason to trust the green ones. Writing them found three real defects — an unloaded adapter, a background process holding a pipe open, and a redaction rule that leaked the tail of an opaque token on BSD sed.",
+
+    iH:"Install",
+    iS:"Needs curl, jq, and bash. Tested on stock macOS bash 3.2 and on Linux.",
+    i1H:"1. Install and run it",
+    i1P:"Then say \"verify my recent work\", or /verify. Works with any harness that reads SKILL.md — Claude Code, Codex, Cursor, Gemini CLI, OpenCode.",
+    i2H:"2. Point it at your stack",
+    i2P:"The gates are stack-agnostic. One adapter file holds the six facts they cannot guess: how to compile, which checks to run, how to start it, how to know it is up, how to get a token, how to make a test account.",
+    iNote:"adapters/spring-mybatis.md is a filled-in example carrying the seven traps found while running this skill against a real Spring Boot 3 and MyBatis service. Every one produces a wrong verdict rather than an obvious error.",
+
+    fCredit:"The report style adapts wait-what by Matt Pocock; the skill's structure follows writing-great-skills.",
+    fExample:"Example report"
+  }
+};
+
+// Fail loudly in the console when a key exists in one language only — a missing
+// key renders as a blank line, which is worse than an obvious error.
+(function auditKeys(){
+  const ko = Object.keys(I18N.ko), en = Object.keys(I18N.en);
+  const missing = [
+    ...ko.filter(k => !(k in I18N.en)).map(k => "en is missing: " + k),
+    ...en.filter(k => !(k in I18N.ko)).map(k => "ko is missing: " + k)
+  ];
+  const used = [...document.querySelectorAll("[data-i18n]")].map(n => n.dataset.i18n);
+  const orphan = used.filter(k => !(k in I18N.ko));
+  if (missing.length || orphan.length) {
+    console.warn("[i18n]", [...missing, ...orphan.map(k => "no entry for used key: " + k)].join("\n"));
+  }
+})();
+
+function setLang(lang){
+  const dict = I18N[lang] || I18N.ko;
+  document.documentElement.lang = lang;
+  document.querySelectorAll("[data-i18n]").forEach(node => {
+    const value = dict[node.dataset.i18n];
+    if (value !== undefined) node.innerHTML = value;
+  });
+  document.querySelectorAll(".lang button").forEach(b => {
+    b.setAttribute("aria-pressed", String(b.dataset.lang === lang));
+  });
+  try { localStorage.setItem("verify-skill-lang", lang); } catch (e) {}
+}
+
+document.querySelectorAll(".lang button").forEach(b => {
+  b.addEventListener("click", () => setLang(b.dataset.lang));
+});
+
+// Default is ko. A visitor's own choice wins, but navigator.language does not
+// get a vote — it reports en-US in most automation and would silently flip the
+// default the page is specified to have.
+let initial = "ko";
+try {
+  const saved = localStorage.getItem("verify-skill-lang");
+  if (saved === "ko" || saved === "en") initial = saved;
+} catch (e) {}
+setLang(initial);
+</script>
+</body>
+</html>
