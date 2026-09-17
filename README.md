@@ -1,5 +1,7 @@
 # agent-skills
 
+Landing page: https://cskwork.github.io/agent-skills/ (the shop board; `index.html` at the repo root, built with the `impeccable` skill).
+
 Personal library of agent skills (Claude Code, Codex, OpenCode, Pi, Hermes, ...).
 This repo is the **source of truth**; `npx skills` projects it into each harness.
 Domain-specific / work skills live in the private companion repo `cskwork/agent-skills-private`,

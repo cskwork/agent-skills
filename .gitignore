@@ -4,3 +4,6 @@ __pycache__/
 node_modules/
 .env
 *.local
+.impeccable/review/
+.impeccable/build/
+.impeccable/decision-payload.json

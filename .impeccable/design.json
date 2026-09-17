@@ -1,0 +1,525 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-09-17T00:00:00Z",
+  "title": "Design System: agent-skills",
+  "extensions": {
+    "colorMeta": {
+      "red": {
+        "role": "primary",
+        "displayName": "Safety Red",
+        "canonical": "oklch(51.4% 0.201 25.8)",
+        "tonalRamp": [
+          "#3f0000",
+          "#660000",
+          "#8d0000",
+          "#b40013",
+          "#db3737",
+          "#ff5e58",
+          "#ff847a",
+          "#ffa89c"
+        ]
+      },
+      "red-hi": {
+        "role": "primary",
+        "displayName": "Rail Highlight",
+        "canonical": "oklch(60.2% 0.208 21.6)",
+        "tonalRamp": [
+          "#410000",
+          "#680000",
+          "#8f0000",
+          "#b60021",
+          "#de3042",
+          "#ff5a62",
+          "#ff7f83",
+          "#ffa4a6"
+        ]
+      },
+      "red-lo": {
+        "role": "primary",
+        "displayName": "Rail Shade",
+        "canonical": "oklch(37.7% 0.145 25.3)",
+        "tonalRamp": [
+          "#330000",
+          "#570000",
+          "#7b0611",
+          "#9f3230",
+          "#c5544f",
+          "#eb766f",
+          "#ff9990",
+          "#ffbdb3"
+        ]
+      },
+      "grip": {
+        "role": "primary",
+        "displayName": "Grip Red",
+        "canonical": "oklch(51.4% 0.201 25.8)",
+        "tonalRamp": [
+          "#3f0000",
+          "#660000",
+          "#8d0000",
+          "#b40013",
+          "#db3737",
+          "#ff5e58",
+          "#ff847a",
+          "#ffa89c"
+        ]
+      },
+      "lamp": {
+        "role": "secondary",
+        "displayName": "Shop-Lamp Amber",
+        "canonical": "oklch(88.0% 0.135 86.1)",
+        "tonalRamp": [
+          "#220000",
+          "#3f1800",
+          "#5e3600",
+          "#7f5500",
+          "#a17600",
+          "#c39720",
+          "#e7ba4d",
+          "#ffde74"
+        ]
+      },
+      "steel": {
+        "role": "tertiary",
+        "displayName": "Tool Steel",
+        "canonical": "oklch(59.3% 0.015 251.6)",
+        "tonalRamp": [
+          "#070c11",
+          "#1f252b",
+          "#3a4048",
+          "#585e66",
+          "#777e86",
+          "#989fa8",
+          "#bac2ca",
+          "#dee5ee"
+        ]
+      },
+      "board": {
+        "role": "neutral",
+        "displayName": "Hardboard",
+        "canonical": "oklch(92.8% 0.015 90.2)",
+        "tonalRamp": [
+          "#0e0b05",
+          "#27241c",
+          "#434037",
+          "#615d54",
+          "#817d73",
+          "#a29e94",
+          "#c5c1b6",
+          "#e8e4d9"
+        ]
+      },
+      "hole": {
+        "role": "neutral",
+        "displayName": "Drilled Hole",
+        "canonical": "oklch(61.7% 0.021 90.6)",
+        "tonalRamp": [
+          "#0f0b03",
+          "#282418",
+          "#443f33",
+          "#625d50",
+          "#827d6f",
+          "#a39e90",
+          "#c6c1b2",
+          "#eae4d5"
+        ]
+      },
+      "hole-rim": {
+        "role": "neutral",
+        "displayName": "Hole Rim",
+        "canonical": "oklch(86.7% 0.020 90.6)",
+        "tonalRamp": [
+          "#0e0b03",
+          "#282419",
+          "#443f34",
+          "#625d51",
+          "#827d70",
+          "#a39e91",
+          "#c6c1b3",
+          "#e9e4d6"
+        ]
+      },
+      "shadow": {
+        "role": "neutral",
+        "displayName": "Shadow Paint",
+        "canonical": "oklch(19.2% 0.004 84.6)",
+        "tonalRamp": [
+          "#0c0b09",
+          "#252422",
+          "#41403d",
+          "#5f5d5b",
+          "#7e7d7a",
+          "#a09e9b",
+          "#c2c1be",
+          "#e6e4e1"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "oklch(21.9% 0.007 78.2)",
+        "tonalRamp": [
+          "#0d0b08",
+          "#262421",
+          "#423f3c",
+          "#605d5a",
+          "#7f7d79",
+          "#a19e9a",
+          "#c3c0bc",
+          "#e7e4e0"
+        ]
+      },
+      "ink-2": {
+        "role": "neutral",
+        "displayName": "Ink Soft",
+        "canonical": "oklch(39.6% 0.013 81.8)",
+        "tonalRamp": [
+          "#0e0b06",
+          "#27231d",
+          "#433f38",
+          "#615d56",
+          "#817d75",
+          "#a29e96",
+          "#c5c0b8",
+          "#e9e4db"
+        ]
+      },
+      "paper": {
+        "role": "neutral",
+        "displayName": "Shop Paper",
+        "canonical": "oklch(96.7% 0.014 93.0)",
+        "tonalRamp": [
+          "#0d0b05",
+          "#26241d",
+          "#424038",
+          "#605e55",
+          "#807d74",
+          "#a19e95",
+          "#c4c1b7",
+          "#e7e5db"
+        ]
+      },
+      "chest": {
+        "role": "neutral",
+        "displayName": "Chest Dark",
+        "canonical": "oklch(21.5% 0.004 48.5)",
+        "tonalRamp": [
+          "#0d0b0a",
+          "#262322",
+          "#413f3e",
+          "#5f5d5c",
+          "#7f7d7b",
+          "#a09e9c",
+          "#c3c0bf",
+          "#e7e4e2"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Painted Display",
+        "purpose": "The one headline on the board. Big Shoulders 900 uppercase, sub-1 line height, Shadow Paint with one phrase in Safety Red."
+      },
+      "headline": {
+        "displayName": "Section Headline",
+        "purpose": "Section titles, 800-900 uppercase. Each section picks one clamp and holds it."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Step headings and the inventory tag's skill name."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Archivo, paper surfaces only, never above 1rem, always with an explicit ch measure."
+      },
+      "label": {
+        "displayName": "Stamped Label",
+        "purpose": "Martian Mono capitals with open tracking: tool names, table headers, switch states, buttons, captions."
+      },
+      "command": {
+        "displayName": "Command",
+        "purpose": "Install lines and shell snippets, engraved on metal or reversed out on Shadow Paint."
+      },
+      "numeral": {
+        "displayName": "Stock Numeral",
+        "purpose": "Use counts, set in the display face with a mono caption beside them, tabular."
+      }
+    },
+    "shadows": [
+      {
+        "name": "rail-steel",
+        "value": "0 10px 24px -6px rgba(20,10,10,.55), inset 0 1px 0 rgba(255,255,255,.35), inset 0 -2px 0 rgba(0,0,0,.35)",
+        "purpose": "The bolted-on red steel header sitting proud of the board."
+      },
+      {
+        "name": "lit-plate",
+        "value": "inset 0 1px 0 rgba(255,255,255,.7), inset 0 -1px 0 rgba(0,0,0,.25), 0 4px 10px -2px rgba(0,0,0,.45), 0 0 0 1px rgba(0,0,0,.25), 0 8px 34px 2px rgba(255,209,102,.55)",
+        "purpose": "The only amber bloom in the system. Reserved for the engraved install plate."
+      },
+      {
+        "name": "painted-shadow",
+        "value": "drop-shadow(1px 2px 1.5px rgba(21,20,18,.35))",
+        "purpose": "Tool silhouettes and hooks at rest: paint lying almost flat on the board."
+      },
+      {
+        "name": "hung-tool",
+        "value": "drop-shadow(2px 5px 4px rgba(21,20,18,.45))",
+        "purpose": "A tool in its hung state, standing off the board."
+      },
+      {
+        "name": "paper-on-board",
+        "value": "0 8px 18px -8px rgba(21,20,18,.5), 0 0 0 1px rgba(21,20,18,.16)",
+        "purpose": "Taped paper notes. The hairline ring is the cut edge, not a border."
+      },
+      {
+        "name": "sheet-on-board",
+        "value": "0 10px 30px -8px rgba(21,20,18,.5), 0 0 0 1px rgba(21,20,18,.18)",
+        "purpose": "The pinned inventory sheet."
+      },
+      {
+        "name": "hanging-tag",
+        "value": "0 6px 18px -4px rgba(21,20,18,.5), 0 0 0 1px rgba(21,20,18,.25)",
+        "purpose": "The inventory tag floating over the board."
+      },
+      {
+        "name": "drawer-front",
+        "value": "inset 0 1px 0 rgba(255,255,255,.35), inset 0 -3px 0 rgba(0,0,0,.4), 0 6px 14px -4px rgba(0,0,0,.7)",
+        "purpose": "Painted steel drawer in the dark chest; the heaviest inset lip in the system."
+      },
+      {
+        "name": "stamped-control",
+        "value": "0 1px 0 rgba(255,255,255,.25) inset, 0 2px 4px rgba(0,0,0,.4)",
+        "purpose": "Copy buttons and other stamped dark-steel controls."
+      },
+      {
+        "name": "pressed-control",
+        "value": "inset 0 2px 4px rgba(0,0,0,.7), 0 1px 0 rgba(255,255,255,.25)",
+        "purpose": "The recessed hang-switch track. The only inverted element."
+      },
+      {
+        "name": "board-light",
+        "value": "linear-gradient(160deg, rgba(255,255,255,.35), rgba(255,255,255,0) 40%, rgba(40,35,25,.10) 100%)",
+        "purpose": "The single shop lamp falling from the upper left across the board. Not a shadow, but the reason every shadow is offset down and right."
+      }
+    ],
+    "motion": [
+      {
+        "name": "press",
+        "value": "transform .12s cubic-bezier(.2,.8,.2,1)",
+        "purpose": "Button press; the control moves down 1px."
+      },
+      {
+        "name": "material-fade",
+        "value": "background .2s",
+        "purpose": "Gradient/state fades on steel controls."
+      },
+      {
+        "name": "tag-reveal",
+        "value": "opacity .25s ease-out, transform .35s cubic-bezier(.2,.9,.2,1)",
+        "purpose": "The inventory tag fading up into the bottom-right of the board."
+      },
+      {
+        "name": "switch-throw",
+        "value": "transform .28s cubic-bezier(.2,.9,.2,1.1)",
+        "purpose": "The hang switch knob travelling 28px with a slight overshoot."
+      },
+      {
+        "name": "tool-lift",
+        "value": "transform .5s cubic-bezier(.2,.9,.2,1)",
+        "purpose": "A silhouette lifting -4px and rotating -2deg on hover, focus or open."
+      },
+      {
+        "name": "tool-drop",
+        "value": "drop .6s cubic-bezier(.2,1.1,.3,1) both",
+        "purpose": "Tools falling onto their hooks when the board is hung; keyframes translateY(-18px) rotate(-6deg) to rest."
+      },
+      {
+        "name": "drop-stagger",
+        "value": "calc(var(--i) * 45ms)",
+        "purpose": "Per-index delay so the board fills left to right rather than all at once."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "@media (prefers-reduced-motion: reduce)",
+        "purpose": "Removes the drop animation and the tag transition and switches smooth scrolling off; the end state is kept."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "board-tighten",
+        "value": "1300px"
+      },
+      {
+        "name": "rail-restack",
+        "value": "1100px"
+      },
+      {
+        "name": "mobile",
+        "value": "760px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Copy Button",
+      "kind": "button",
+      "refersTo": "copy-button",
+      "description": "The only button style in the system: stamped dark steel, mono capitals, amber when the copy lands.",
+      "html": "<button class=\"ds-copy\">Copy</button> <button class=\"ds-copy\" data-state=\"done\">Copied</button>",
+      "css": ".ds-copy{appearance:none;border:0;cursor:pointer;border-radius:2px;padding:7px 12px;font-family:\"Martian Mono\",ui-monospace,Menlo,monospace;font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;background:linear-gradient(180deg,#2b2e31,#151719);color:#fff;box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 2px 4px rgba(0,0,0,.4);transition:transform .12s cubic-bezier(.2,.8,.2,1),background .2s}.ds-copy:hover{background:linear-gradient(180deg,#3a3e42,#1d2022)}.ds-copy:active{transform:translateY(1px)}.ds-copy:focus-visible{outline:3px solid var(--lamp,#ffd166);outline-offset:3px;border-radius:2px}.ds-copy[data-state=\"done\"]{background:linear-gradient(180deg,#ffe08a,var(--lamp,#ffd166));color:#1a1c1e}"
+    },
+    {
+      "name": "Engraved Install Plate",
+      "kind": "custom",
+      "refersTo": "install-plate",
+      "description": "The one lit element: a screwed-down aluminium plate carrying the install command under an amber halo.",
+      "html": "<div class=\"ds-plate\"><code>npx skills add cskwork/agent-skills -g -a claude-code codex opencode -s '*' -y</code><button class=\"ds-copy\">Copy</button></div>",
+      "css": ".ds-plate{position:relative;display:inline-flex;align-items:center;gap:12px;padding:10px 14px 10px 18px;border-radius:3px;background:linear-gradient(180deg,#e9ebe9,#c9ccc9 55%,#d9dbd8);color:#1a1c1e;box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 -1px 0 rgba(0,0,0,.25) inset,0 4px 10px -2px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.25),0 8px 34px 2px rgba(255,209,102,.55)}.ds-plate::before,.ds-plate::after{content:\"\";position:absolute;top:50%;width:8px;height:8px;border-radius:50%;transform:translateY(-50%);background:radial-gradient(circle at 35% 35%,#fff,#9aa0a6 60%,#5a6067);box-shadow:0 1px 1px rgba(0,0,0,.5)}.ds-plate::before{left:5px}.ds-plate::after{right:5px}.ds-plate code{font-family:\"Martian Mono\",ui-monospace,Menlo,monospace;font-size:.8rem;font-weight:600;letter-spacing:-.01em;white-space:nowrap;color:#1f2225;text-shadow:0 1px 0 rgba(255,255,255,.8)}"
+    },
+    {
+      "name": "Hang Switch",
+      "kind": "custom",
+      "refersTo": "hang-switch",
+      "description": "EMPTY | HUNG toggle recessed into the rail; the knob lights amber when thrown.",
+      "html": "<div class=\"ds-switch\"><span class=\"ds-lbl\">Empty</span><button class=\"ds-switch-btn\" role=\"switch\" aria-checked=\"true\" aria-label=\"Hang the tools\"></button><span class=\"ds-lbl ds-on\">Hung</span></div>",
+      "css": ".ds-switch{display:inline-flex;align-items:center;gap:10px;font-family:\"Martian Mono\",ui-monospace,Menlo,monospace;font-size:.68rem;letter-spacing:.08em;text-transform:uppercase;color:#fff;background:linear-gradient(180deg,#e23545 0,#c0111f 18%,#a60e1a 70%,#7d0a13 100%);padding:10px 16px;border-radius:2px}.ds-switch .ds-lbl{opacity:.8}.ds-switch .ds-on{opacity:1;color:var(--lamp,#ffd166)}.ds-switch-btn{appearance:none;border:0;cursor:pointer;position:relative;width:54px;height:26px;border-radius:13px;background:linear-gradient(180deg,#3a0a0f,#5a0d15);box-shadow:inset 0 2px 4px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.25)}.ds-switch-btn::after{content:\"\";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:radial-gradient(circle at 35% 30%,#fff,#b9bfc6 55%,#6e757c);box-shadow:0 2px 3px rgba(0,0,0,.6);transition:transform .28s cubic-bezier(.2,.9,.2,1.1)}.ds-switch-btn[aria-checked=\"true\"]::after{transform:translateX(28px);background:radial-gradient(circle at 35% 30%,#fff3c4,var(--lamp,#ffd166) 55%,#b07f0e)}.ds-switch-btn:focus-visible{outline:3px solid var(--lamp,#ffd166);outline-offset:3px}"
+    },
+    {
+      "name": "Tool Cell",
+      "kind": "custom",
+      "refersTo": "tool-cell",
+      "description": "The unit the board is made of: hook, silhouette on a shared 120x220 frame, stamped name, stock numeral. Shown painted; the hung variant swaps three custom properties.",
+      "html": "<ul class=\"ds-tools\"><li class=\"ds-tool\"><button type=\"button\" aria-expanded=\"false\"><svg class=\"ds-hook\" viewBox=\"0 0 24 36\" aria-hidden=\"true\"><path d=\"M12 0v4M12 4c-5 0-8 3-8 8v6a8 8 0 0 0 16 0v-3\" fill=\"none\" stroke=\"#6b7178\" stroke-width=\"3\" stroke-linecap=\"round\"/></svg><svg class=\"ds-shape\" viewBox=\"0 0 120 220\" aria-hidden=\"true\"><rect fill=\"var(--c-s)\" x=\"40\" y=\"22\" width=\"40\" height=\"188\" rx=\"4\"/><rect fill=\"var(--c-h)\" x=\"51\" y=\"60\" width=\"18\" height=\"34\" rx=\"9\"/><rect fill=\"var(--c-h)\" x=\"51\" y=\"150\" width=\"18\" height=\"34\" rx=\"9\"/><rect fill=\"var(--c-g)\" x=\"55\" y=\"72\" width=\"10\" height=\"10\" rx=\"5\"/><rect fill=\"var(--c-g)\" x=\"55\" y=\"162\" width=\"10\" height=\"10\" rx=\"5\"/><rect fill=\"var(--c-h)\" x=\"48\" y=\"112\" width=\"24\" height=\"12\" rx=\"2\"/></svg><span class=\"ds-name\">verification-before-completion</span><span class=\"ds-uses\">78</span></button></li></ul>",
+      "css": ".ds-tools{--cell:24px;display:grid;grid-template-columns:repeat(auto-fill,calc(var(--cell)*7));gap:0;justify-content:start;margin:0;padding:var(--cell);list-style:none;background-color:var(--board,#ebe7dc);background-image:radial-gradient(circle at 12px 12px,var(--hole,#8a8577) 0 2.6px,var(--hole-rim,#d8d3c5) 2.8px 3.6px,transparent 4px),radial-gradient(circle at 11px 11px,rgba(255,255,255,.5) 0 3.3px,transparent 4.2px);background-size:var(--cell) var(--cell)}.ds-tool{position:relative;height:calc(var(--cell)*10);--c-s:var(--shadow,#151412);--c-g:var(--shadow,#151412);--c-h:var(--board,#ebe7dc)}.ds-tool.ds-hung{--c-s:var(--steel,#787f87);--c-g:var(--grip,#c0111f)}.ds-tool button{appearance:none;border:0;background:transparent;cursor:pointer;width:100%;height:100%;padding:0;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;border-radius:4px}.ds-tool button:focus-visible{outline:3px solid var(--red,#c0111f);outline-offset:3px}.ds-hook{width:24px;height:36px;display:block;margin-top:4px;filter:drop-shadow(1px 2px 1.5px rgba(21,20,18,.35))}.ds-shape{width:88px;height:154px;display:block;margin-top:-6px;filter:drop-shadow(1px 2px 1.5px rgba(21,20,18,.35));transition:transform .5s cubic-bezier(.2,.9,.2,1)}.ds-tool.ds-hung .ds-shape{filter:drop-shadow(2px 5px 4px rgba(21,20,18,.45))}.ds-tool button:hover .ds-shape,.ds-tool button:focus-visible .ds-shape{transform:translateY(-4px) rotate(-2deg)}.ds-name{margin-top:6px;font-family:\"Martian Mono\",ui-monospace,Menlo,monospace;font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink,#1c1a17);max-width:calc(var(--cell)*6.5);line-height:1.25;background:var(--board,#ebe7dc);padding:0 3px;-webkit-box-decoration-break:clone;box-decoration-break:clone}.ds-tool button:hover .ds-name{color:var(--red,#c0111f)}.ds-uses{font-family:\"Big Shoulders Display\",system-ui,sans-serif;font-weight:700;font-size:.9rem;color:var(--ink-2,#4a463f);letter-spacing:.04em;margin-top:2px;background:var(--board,#ebe7dc);padding:0 5px}"
+    },
+    {
+      "name": "Inventory Tag",
+      "kind": "card",
+      "refersTo": "inventory-tag",
+      "description": "The punched paper tag that reads out one tool: clipped corner, eyelet, description, stock numeral and a red link.",
+      "html": "<aside class=\"ds-tag\"><h3>gh-release</h3><p>Cut a versioned GitHub release: tag, push, and publish release notes from the changelog.</p><div class=\"ds-tag-row\"><span class=\"ds-n\">37<small>uses &middot; 90 days</small></span><span class=\"ds-kind\">Hammer</span><a href=\"#\">Open SKILL.md &rarr;</a></div></aside>",
+      "css": ".ds-tag{position:relative;display:block;width:min(420px,100%);background:linear-gradient(180deg,#f3ecd6,#e6ddc2);color:var(--ink,#1c1a17);font-family:Archivo,system-ui,sans-serif;border-radius:3px 14px 3px 3px;padding:16px 18px 14px 22px;box-shadow:0 6px 18px -4px rgba(21,20,18,.5),0 0 0 1px rgba(21,20,18,.25);clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%)}.ds-tag::before{content:\"\";position:absolute;left:8px;top:10px;width:9px;height:9px;border-radius:50%;background:var(--board,#ebe7dc);box-shadow:0 0 0 2px #9a9585 inset,0 0 0 1px rgba(0,0,0,.3)}.ds-tag h3{margin:0 0 4px;font-family:\"Big Shoulders Display\",system-ui,sans-serif;font-size:1.5rem;font-weight:800;line-height:.92;letter-spacing:.01em;text-transform:uppercase}.ds-tag p{margin:0;font-size:.92rem;line-height:1.45}.ds-tag-row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px;margin-top:10px;font-family:\"Martian Mono\",ui-monospace,Menlo,monospace;font-size:.7rem}.ds-tag-row a{margin-left:auto;color:var(--red,#c0111f);font-weight:600;text-underline-offset:.2em}.ds-kind{text-transform:uppercase;letter-spacing:.06em;color:var(--ink-2,#4a463f)}.ds-n{font-family:\"Big Shoulders Display\",system-ui,sans-serif;font-weight:900;font-size:1.35rem;color:var(--ink,#1c1a17)}.ds-n small{font-family:\"Martian Mono\",ui-monospace,Menlo,monospace;font-weight:400;font-size:.62rem;color:var(--ink-2,#4a463f);margin-left:6px;letter-spacing:.04em}"
+    },
+    {
+      "name": "Profile Drawer",
+      "kind": "card",
+      "refersTo": "drawer",
+      "description": "A red steel drawer front in the dark chest: paper name label, mono count, one paragraph, and a chrome pull with the command engraved.",
+      "html": "<ul class=\"ds-drawers\"><li class=\"ds-drawer\"><div><span class=\"ds-label\">core</span><span class=\"ds-count\">14 skills &middot; the default set</span><p>The verification loop, diagnosis, release, delegation, browser QA, the SDLC gates and the writing tools.</p></div><div class=\"ds-pull\"><code>./install.sh -p core</code><button class=\"ds-copy ds-copy-sm\">Copy</button></div></li></ul>",
+      "css": ".ds-drawers{margin:0;padding:24px;list-style:none;background:linear-gradient(180deg,#2a2725,#1b1918)}.ds-drawer{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center;padding:18px 24px;border-radius:4px;color:#fff;font-family:Archivo,system-ui,sans-serif;background:linear-gradient(180deg,#d0192a,var(--red,#c0111f) 30%,#9c0d18 100%);box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -3px 0 rgba(0,0,0,.4),0 6px 14px -4px rgba(0,0,0,.7)}.ds-drawer>div,.ds-pull{min-width:0}.ds-label{display:inline-block;background:var(--paper,#f7f4ea);color:var(--ink,#1c1a17);padding:4px 10px;border-radius:2px;font-family:\"Big Shoulders Display\",system-ui,sans-serif;font-weight:800;font-size:1.25rem;letter-spacing:.06em;text-transform:uppercase;box-shadow:0 1px 0 rgba(0,0,0,.4),inset 0 0 0 1px rgba(0,0,0,.15)}.ds-count{font-family:\"Martian Mono\",ui-monospace,Menlo,monospace;font-size:.7rem;letter-spacing:.06em;opacity:.9;margin-left:12px}.ds-drawer p{margin:8px 0 0;font-size:.95rem;max-width:60ch;color:#ffe9eb}.ds-pull{display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:20px;background:linear-gradient(180deg,#f2f4f5,#b8bec4 55%,#dfe3e6);color:#1a1c1e;box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(0,0,0,.35),0 3px 6px rgba(0,0,0,.5)}.ds-pull code{font-family:\"Martian Mono\",ui-monospace,Menlo,monospace;font-size:.74rem;font-weight:600;white-space:nowrap;text-shadow:0 1px 0 rgba(255,255,255,.8)}.ds-copy-sm{padding:6px 10px;font-size:.64rem}"
+    },
+    {
+      "name": "Taped Paper Note",
+      "kind": "card",
+      "refersTo": "paper-note",
+      "description": "Square-cut paper taped to the board. The only surface body copy is allowed to sit on.",
+      "html": "<div class=\"ds-note\"><p>The shadow board for the agent skills I use every day. One repo is the source of truth: <strong>npx skills</strong> hangs each tool in every harness.</p></div>",
+      "css": ".ds-note{position:relative;background:linear-gradient(180deg,#f8f5eb,#ece7d6);color:var(--ink,#1c1a17);font-family:Archivo,system-ui,sans-serif;padding:16px 20px 14px;box-shadow:0 8px 18px -8px rgba(21,20,18,.5),0 0 0 1px rgba(21,20,18,.16)}.ds-note::before{content:\"\";position:absolute;top:-10px;left:50%;width:96px;height:22px;transform:translateX(-50%) rotate(-2deg);background:rgba(255,255,255,.6);box-shadow:0 1px 2px rgba(0,0,0,.18);mix-blend-mode:multiply}.ds-note p{margin:0;font-size:1rem;line-height:1.5;max-width:52ch;color:var(--ink-2,#4a463f)}.ds-note strong{color:var(--ink,#1c1a17);font-weight:600}"
+    },
+    {
+      "name": "Steel Rail",
+      "kind": "nav",
+      "refersTo": "rail",
+      "description": "The bolted red steel header with the wordmark embossed into it and the harness list stamped across the middle.",
+      "html": "<header class=\"ds-rail\"><a class=\"ds-brand\" href=\"#\"><b>agent-skills</b><span>cskwork &middot; shop board</span></a><div class=\"ds-harnesses\"><span>Claude Code</span><span>Codex</span><span>OpenCode</span><span>Pi</span><span>Hermes</span></div></header>",
+      "css": ".ds-rail{display:grid;grid-template-columns:auto 1fr;gap:24px;align-items:center;padding:14px 24px;color:#fff;background:linear-gradient(180deg,#e23545 0,var(--red,#c0111f) 18%,#a60e1a 70%,#7d0a13 100%);box-shadow:0 10px 24px -6px rgba(20,10,10,.55),inset 0 1px 0 rgba(255,255,255,.35),inset 0 -2px 0 rgba(0,0,0,.35)}.ds-brand{display:flex;align-items:baseline;gap:14px;text-decoration:none;color:inherit}.ds-brand b{font-family:\"Big Shoulders Display\",system-ui,sans-serif;font-weight:900;font-size:2.1rem;letter-spacing:.01em;line-height:1;color:#fff;text-shadow:0 1px 0 #ff8a95,0 -1px 0 #5a0710}.ds-brand span{font-family:\"Martian Mono\",ui-monospace,Menlo,monospace;font-size:.72rem;opacity:.85;letter-spacing:.04em}.ds-brand:focus-visible{outline:3px solid var(--lamp,#ffd166);outline-offset:3px}.ds-harnesses{font-family:\"Martian Mono\",ui-monospace,Menlo,monospace;font-size:.72rem;letter-spacing:.03em;opacity:.9;display:flex;gap:18px;justify-content:center;flex-wrap:wrap}.ds-harnesses span::before{content:\"\";display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;opacity:.7;margin-right:8px;vertical-align:middle}"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Shop Shadow Board",
+    "overview": "This is a wall in a workshop, photographed under one lamp. The ground is perforated off-white hardboard with its hole lattice fully drawn, not suggested: every 24px there is a drilled hole with a rim and a highlight, and that lattice runs edge to edge behind everything. Bolted across the top is a red steel tool-chest rail with the name embossed into it. Screwed to the rail is a single brushed aluminium plate carrying the install command, engraved, and it is the only thing on the page that emits light. Everything else on the board is painted black: 23 tool silhouettes hanging from steel hooks, each stencilled with its skill name and its use count. Flip the switch on the rail and the paint becomes metal — the same 23 shapes fill in as grey steel with red grips and drop onto their hooks one after another.\n\nThe density is high and deliberately unmodern. There is no card grid, no rounded panel with a soft shadow, no gradient hero. Depth here is physical and specific: hardboard is grainy and matte, steel is a hard gradient with a one-pixel highlight and a two-pixel dark lip, paper is square-cut with a piece of tape or two push pins holding it, and aluminium under a lamp throws an amber halo. Type follows the same logic — headings are painted signage in a compressed display face, every label is stamped mono capitals, and body copy only ever appears on paper.\n\nThe world has one accent and one light. Red is structural, not decorative: it is the rail, the drawers, the tool grips, the focus ring, the text selection, the scrollbar. Amber appears only where something is lit or thrown. Nothing is greyed out to look \"secondary\" — the quiet state of this page is black paint on off-white board, and that state is the default.",
+    "keyCharacteristics": [
+      "A 24px pegboard hole lattice as the literal layout grid, visible behind every section",
+      "Painted-black tool silhouettes as the resting state; steel-and-red tools as the acted-upon state",
+      "One lit element (the engraved install plate) and one lamp colour used only for lit states",
+      "Materials rendered with real gradients, inset bevels and grain, not flat colour fills",
+      "Two type poles: painted display capitals and stamped mono labels, with almost nothing between",
+      "Paper (notes, tag, inventory sheet) is the only surface body copy is allowed to sit on"
+    ],
+    "rules": [
+      {
+        "name": "The One Lamp Rule",
+        "body": "Amber is light, not decoration. It may appear only where something is genuinely lit or switched: the engraved plate's halo, a thrown switch, a completed copy, and focus on dark ground. If a second element glows, the first one stops meaning anything.",
+        "section": "colors"
+      },
+      {
+        "name": "The Red Is Structure Rule",
+        "body": "Red is the steel of the page — rail, drawers, grips, focus, selection. It is never used as a background for a paragraph and never as an emphasis tint on paper. When red appears on paper it appears as a 1.5px underline or a link, at text weight.",
+        "section": "colors"
+      },
+      {
+        "name": "The No Grey-Out Rule",
+        "body": "Inactive is not dimmed. The resting state of a tool is fully saturated black paint at full opacity; the acted-upon state is steel and red. Depth of state is carried by material change, never by lowering opacity on text.",
+        "section": "colors"
+      },
+      {
+        "name": "The Two Poles Rule",
+        "body": "Type is either painted (display, 800–900, uppercase, huge) or stamped (mono, uppercase, tiny, tracked). The middle register exists only for body copy on paper, and body copy never exceeds 1rem. If a new size lands between 1.5rem and 2.2rem, it is probably a heading that should be painted or a label that should be stamped.",
+        "section": "typography"
+      },
+      {
+        "name": "The Knock-Out Rule",
+        "body": "Any text that sits directly on the hole lattice carries a Hardboard-coloured plate behind it (background #ebe7dc, padding 0 3px, with box-decoration-break: clone so wrapped lines each get their own plate). Text is never set straight onto the perforations.",
+        "section": "typography"
+      },
+      {
+        "name": "The Board Is The Grid Rule",
+        "body": "Every measurement is a whole or half multiple of the 24px cell, because the cell is visible. A value that does not land on the lattice will be seen as off, so there are no arbitrary paddings in the layout scale.",
+        "section": "layout"
+      },
+      {
+        "name": "The Zero-Gutter Board Rule",
+        "body": "Tool cells touch. Do not introduce grid gap on the board; separation comes from the silhouettes' own internal margin and from the lattice showing through.",
+        "section": "layout"
+      },
+      {
+        "name": "The One Lamp Rule (depth form)",
+        "body": "The light comes from the upper left, once. Every cast shadow is offset positively in x and y; no element casts upward, and no element gets its own light source.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Two Shadows Rule",
+        "body": "Paint casts a 2px shadow; an object casts a 5px shadow. When something transitions from represented to real, change the shadow — that is how state is shown here, not with opacity or an outline.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Material Radius Rule",
+        "body": "Paper is square (0), metal is chamfered (2–4px), grips are round (pill or circle). Do not round a paper surface, and do not square off a pull.",
+        "section": "shapes"
+      },
+      {
+        "name": "The One Scale Rule",
+        "body": "Every tool is drawn in the same 120×220 frame and displayed at the same size, hanging from the same hook at the same height. A tool never gets bigger because it matters more; its use count says that instead.",
+        "section": "shapes"
+      }
+    ],
+    "dos": [
+      "Do size everything from the 24px cell, because the cell is visible as the hole lattice behind the page.",
+      "Do put a Hardboard knock-out plate behind any text that lands on the perforations.",
+      "Do build raised surfaces as a gradient plus a 1px top highlight and a dark bottom lip, with the cast shadow offset down and right.",
+      "Do keep every label in mono capitals with 0.03–0.08em tracking, and every heading in display capitals at 800–900.",
+      "Do set body copy only on a paper surface, with an explicit ch measure.",
+      "Do change material to show state — paint to steel, tight shadow to deep shadow — rather than changing opacity.",
+      "Do switch the focus ring from Safety Red to lamp amber whenever the focused control sits on red or dark ground.",
+      "Do label any number shown on the board with what it counts and over what window, in mono beside the numeral.",
+      "Do keep tool art on the shared 120×220 frame at one displayed scale.",
+      "Do cancel the drop animation and the tag's transition under prefers-reduced-motion, keeping the end state."
+    ],
+    "donts": [
+      "Don't let a second element glow. The amber bloom belongs to the engraved plate alone.",
+      "Don't round a paper surface or square off a grip; the radius is the material.",
+      "Don't introduce grid gap between tool cells — the lattice is the gutter.",
+      "Don't dim text or drop opacity to express an inactive state.",
+      "Don't set Martian Mono as running text or below 0.58rem; it is a stamping face.",
+      "Don't put a type size between 1.5rem and 2.2rem into the ramp; the middle register is body copy on paper only.",
+      "Don't scale a tool up to signal importance — the use count carries weight, the silhouette does not.",
+      "Don't introduce a second accent hue. Red is structure and amber is light; a third colour has no material to stand on."
+    ],
+    "openOpportunities": [
+      "The empty hook is never shown: the board always presents 23 occupied positions, so a vacant hook or unpainted shadow is unclaimed territory.",
+      "Labels are plain mono capitals on a knock-out plate, not the stencil ink the direction called for.",
+      "The board has no frame or edge trim; the hardboard runs to the viewport edge with no capping rail or fixing screws.",
+      "Hung tools carry no specular or wear detail, so the hung state reads as a colour swap more than a material change."
+    ]
+  }
+}

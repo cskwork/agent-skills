@@ -1,0 +1,572 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>agent-skills — one repo of tools for Claude Code, Codex, OpenCode, Pi and Hermes</title>
+<meta name="description" content="cskwork's personal agent-skill library. One repo is the source of truth; npx skills hangs every tool in every harness with one line.">
+<meta property="og:title" content="agent-skills — cskwork's shop board">
+<meta property="og:description" content="23 agent skills. One install line hangs them all.">
+<meta name="color-scheme" content="light">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23ebe7dc'/%3E%3Ccircle cx='8' cy='8' r='2' fill='%235a564d'/%3E%3Ccircle cx='24' cy='8' r='2' fill='%235a564d'/%3E%3Ccircle cx='8' cy='24' r='2' fill='%235a564d'/%3E%3Ccircle cx='24' cy='24' r='2' fill='%235a564d'/%3E%3Crect x='13' y='6' width='6' height='20' rx='2' fill='%23151412'/%3E%3C/svg%3E">
+<style>
+@font-face{font-family:"Big Shoulders Display";src:url(assets/fonts/BigShouldersDisplay.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Archivo";src:url(assets/fonts/Archivo.woff2) format("woff2");font-weight:100 900;font-display:swap}
+@font-face{font-family:"Martian Mono";src:url(assets/fonts/MartianMono.woff2) format("woff2");font-weight:100 800;font-display:swap}
+
+:root{
+  --board:#ebe7dc;
+  --hole:#8a8577;
+  --hole-rim:#d8d3c5;
+  --shadow:#151412;
+  --ink:#1c1a17;
+  --ink-2:#4a463f;
+  --red:#c0111f;
+  --red-hi:#e23545;
+  --red-lo:#7d0a13;
+  --steel:#787f87;
+  --grip:#c0111f;
+  --lamp:#ffd166;
+  --paper:#f7f4ea;
+  --cell:24px;
+  --display:"Big Shoulders Display",system-ui,sans-serif;
+  --body:"Archivo",system-ui,sans-serif;
+  --mono:"Martian Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+body{
+  margin:0;background:var(--board);color:var(--ink);
+  font-family:var(--body);font-size:17px;line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+  caret-color:var(--red);
+}
+::selection{background:var(--red);color:#fff}
+:focus-visible{outline:3px solid var(--red);outline-offset:3px;border-radius:2px}
+.rail :focus-visible,.chest :focus-visible,.base :focus-visible,.copy:focus-visible{outline-color:var(--lamp)}
+html{scrollbar-color:var(--red) #2a2825;scrollbar-width:thin}
+::-webkit-scrollbar{width:10px}
+::-webkit-scrollbar-track{background:#2a2825}
+::-webkit-scrollbar-thumb{background:var(--red);border:2px solid #2a2825;border-radius:6px}
+a{color:inherit;text-underline-offset:.2em;text-decoration-thickness:1.5px}
+button{font:inherit;color:inherit}
+h1,h2,h3{margin:0;font-family:var(--display);line-height:.92;text-wrap:balance;letter-spacing:-.01em}
+code,kbd,.mono{font-family:var(--mono);font-size:.86em}
+.visually-hidden{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- pegboard ground ---------- */
+.board{
+  position:relative;
+  background-color:var(--board);
+  background-image:
+    radial-gradient(circle at calc(var(--cell)/2) calc(var(--cell)/2), var(--hole) 0 2.6px, var(--hole-rim) 2.8px 3.6px, transparent 4px),
+    radial-gradient(circle at calc(var(--cell)/2 - 1px) calc(var(--cell)/2 - 1px), rgba(255,255,255,.5) 0 3.3px, transparent 4.2px);
+  background-size:var(--cell) var(--cell);
+}
+.board::before{ /* light falling from the shop lamp, top-left */
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(160deg, rgba(255,255,255,.35), rgba(255,255,255,0) 40%, rgba(40,35,25,.10) 100%);
+}
+.board::after{ /* hardboard grain */
+  content:"";position:absolute;inset:0;pointer-events:none;opacity:.35;mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .55 0 0 0 0 .52 0 0 0 0 .45 0 0 0 .18 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+.board > *{position:relative;z-index:1}
+
+/* ---------- red steel rail (header) ---------- */
+.rail{
+  position:sticky;top:0;z-index:20;
+  background:linear-gradient(180deg,var(--red-hi) 0,var(--red) 18%,#a60e1a 70%,var(--red-lo) 100%);
+  box-shadow:0 10px 24px -6px rgba(20,10,10,.55), inset 0 1px 0 rgba(255,255,255,.35), inset 0 -2px 0 rgba(0,0,0,.35);
+  color:#fff;
+}
+.rail-in{
+  max-width:1440px;margin:0 auto;padding:14px var(--cell);
+  display:grid;grid-template-columns:auto 1fr auto;gap:var(--cell);align-items:center;
+}
+.brand{display:flex;align-items:baseline;gap:14px;text-decoration:none}
+.brand b{
+  font-family:var(--display);font-weight:900;font-size:2.1rem;letter-spacing:.01em;line-height:1;
+  color:#fff;text-shadow:0 1px 0 #ff8a95,0 -1px 0 #5a0710; /* embossed in the steel */
+}
+.brand span{font-family:var(--mono);font-size:.72rem;opacity:.85;letter-spacing:.04em}
+.harnesses{font-family:var(--mono);font-size:.72rem;letter-spacing:.03em;opacity:.9;display:flex;gap:18px;justify-content:center;flex-wrap:wrap}
+.harnesses span::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:#fff;opacity:.7;margin-right:8px;vertical-align:middle}
+
+/* engraved aluminium plate — the one lit element */
+.plate{
+  grid-column:1/-1;justify-self:end;max-width:100%;
+  position:relative;display:flex;align-items:center;gap:12px;
+  padding:10px 14px 10px 18px;border-radius:3px;
+  background:linear-gradient(180deg,#e9ebe9,#c9ccc9 55%,#d9dbd8);
+  color:#1a1c1e;
+  box-shadow:0 1px 0 rgba(255,255,255,.7) inset,0 -1px 0 rgba(0,0,0,.25) inset,
+             0 4px 10px -2px rgba(0,0,0,.45),0 0 0 1px rgba(0,0,0,.25),
+             0 8px 34px 2px rgba(255,209,102,.55);
+}
+.plate::before,.plate::after{ /* screws */
+  content:"";position:absolute;top:50%;width:8px;height:8px;border-radius:50%;transform:translateY(-50%);
+  background:radial-gradient(circle at 35% 35%,#fff,#9aa0a6 60%,#5a6067);
+  box-shadow:0 1px 1px rgba(0,0,0,.5);
+}
+.plate::before{left:5px}.plate::after{right:5px}
+.plate code{
+  font-size:.8rem;font-weight:600;letter-spacing:-.01em;white-space:nowrap;
+  color:#1f2225;text-shadow:0 1px 0 rgba(255,255,255,.8); /* engraved */
+}
+.copy{
+  appearance:none;border:0;cursor:pointer;border-radius:2px;
+  padding:7px 12px;font-family:var(--mono);font-size:.72rem;font-weight:600;letter-spacing:.06em;text-transform:uppercase;
+  background:linear-gradient(180deg,#2b2e31,#151719);color:#fff;
+  box-shadow:0 1px 0 rgba(255,255,255,.25) inset,0 2px 4px rgba(0,0,0,.4);
+  transition:transform .12s cubic-bezier(.2,.8,.2,1),background .2s;
+}
+.copy:hover{background:linear-gradient(180deg,#3a3e42,#1d2022)}
+.copy:active{transform:translateY(1px)}
+.copy[data-state="done"]{background:linear-gradient(180deg,#ffe08a,var(--lamp));color:#1a1c1e}
+
+/* toggle switch: EMPTY | HUNG */
+.switch{display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:.68rem;letter-spacing:.08em;text-transform:uppercase}
+.switch button{
+  appearance:none;border:0;cursor:pointer;position:relative;width:54px;height:26px;border-radius:13px;
+  background:linear-gradient(180deg,#3a0a0f,#5a0d15);box-shadow:inset 0 2px 4px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.25);
+}
+.switch button::after{
+  content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#fff,#b9bfc6 55%,#6e757c);box-shadow:0 2px 3px rgba(0,0,0,.6);
+  transition:transform .28s cubic-bezier(.2,.9,.2,1.1);
+}
+.switch button[aria-checked="true"]::after{transform:translateX(28px);background:radial-gradient(circle at 35% 30%,#fff3c4,var(--lamp) 55%,#b07f0e)}
+.switch .lbl{opacity:.8}.switch .lbl.on{opacity:1;color:var(--lamp)}
+
+/* paper note taped to the board */
+.note-card{position:relative;background:linear-gradient(180deg,#f8f5eb,#ece7d6);padding:16px 20px 14px;
+  box-shadow:0 8px 18px -8px rgba(21,20,18,.5),0 0 0 1px rgba(21,20,18,.16)}
+.note-card::before{content:"";position:absolute;top:-10px;left:50%;width:96px;height:22px;transform:translateX(-50%) rotate(-2deg);
+  background:rgba(255,255,255,.6);box-shadow:0 1px 2px rgba(0,0,0,.18);mix-blend-mode:multiply}
+.sheet.flat{transform:none}
+.base{background:linear-gradient(180deg,#1b1918,#111010);color:#cfc9bb}
+.base a{color:#fff}
+.base code{background:#2a2725;color:#fff;padding:2px 6px;border-radius:2px}
+
+/* ---------- hero: the board ---------- */
+.hero{max-width:1440px;margin:0 auto;padding:var(--cell) var(--cell) var(--cell)}
+.hero-head{display:grid;grid-template-columns:minmax(0,7fr) minmax(0,5fr);gap:var(--cell);align-items:end;margin-bottom:calc(var(--cell)/2)}
+.stencil{
+  font-family:var(--display);font-weight:900;text-transform:uppercase;
+  font-size:clamp(3rem,5.2vw,4.6rem);line-height:.9;letter-spacing:.005em;color:var(--shadow);
+}
+.stencil em{font-style:normal;color:var(--red)}
+.lede{font-size:1rem;max-width:52ch;color:var(--ink-2);margin:0}
+.lede strong{color:var(--ink);font-weight:600}
+
+.tools{
+  display:grid;grid-template-columns:repeat(auto-fill,calc(var(--cell)*7));
+  gap:0;justify-content:start;
+  margin:0;padding:0;list-style:none;
+}
+.tool{position:relative;height:calc(var(--cell)*10);padding:0}
+.tool button{
+  appearance:none;border:0;background:transparent;cursor:pointer;width:100%;height:100%;padding:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:flex-start;text-align:center;
+  border-radius:4px;
+}
+.tool svg.hook{width:24px;height:36px;display:block;margin-top:4px;filter:drop-shadow(1px 2px 1.5px rgba(21,20,18,.35))}
+.tool svg.shape{width:88px;height:154px;display:block;margin-top:-6px;
+  filter:drop-shadow(1px 2px 1.5px rgba(21,20,18,.35));
+  transition:transform .5s cubic-bezier(.2,.9,.2,1);
+}
+.tool .name{
+  margin-top:6px;font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--ink);max-width:calc(var(--cell)*6.5);line-height:1.25;
+  background:var(--board);padding:0 3px;box-decoration-break:clone;-webkit-box-decoration-break:clone;
+}
+.tool .uses{font-family:var(--display);font-weight:700;font-size:.9rem;color:var(--ink-2);letter-spacing:.04em;margin-top:2px;background:var(--board);padding:0 5px}
+/* shadow mode: everything painted black; holes read the board colour */
+.tool{--c-s:var(--shadow);--c-g:var(--shadow);--c-h:var(--board)}
+.tool button:hover svg.shape,.tool button:focus-visible svg.shape,.tool.open svg.shape{transform:translateY(-4px) rotate(-2deg)}
+.tool button:hover .name,.tool.open .name{color:var(--red)}
+/* hung mode: the real tools drop onto their hooks */
+.tools.hung .tool{--c-s:var(--steel);--c-g:var(--grip)}
+.tools.hung .tool svg.shape{
+  filter:drop-shadow(2px 5px 4px rgba(21,20,18,.45));
+  animation:drop .6s cubic-bezier(.2,1.1,.3,1) both;
+  animation-delay:calc(var(--i) * 45ms);
+}
+@keyframes drop{0%{transform:translateY(-18px) rotate(-6deg)}60%{transform:translateY(2px) rotate(1.5deg)}100%{transform:none}}
+@media (prefers-reduced-motion:reduce){.tools.hung .tool svg.shape{animation:none}}
+
+/* hanging inventory tag */
+.tag-wrap{position:sticky;bottom:16px;height:0;pointer-events:none}
+.tag-wrap .tag{position:absolute;bottom:0;right:0}
+.tag{
+  pointer-events:none;opacity:0;transform:translateY(10px);transition:opacity .25s ease-out,transform .35s cubic-bezier(.2,.9,.2,1);
+  position:relative;width:min(420px,100%);
+  background:linear-gradient(180deg,#f3ecd6,#e6ddc2);color:var(--ink);
+  border-radius:3px 14px 3px 3px;padding:16px 18px 14px 22px;
+  box-shadow:0 6px 18px -4px rgba(21,20,18,.5),0 0 0 1px rgba(21,20,18,.25);
+  clip-path:polygon(0 0,calc(100% - 22px) 0,100% 22px,100% 100%,0 100%);
+}
+.tag.show{pointer-events:auto;opacity:1;transform:none}
+@media (prefers-reduced-motion:reduce){.tag{transition:none}}
+.tag::before{ /* eyelet */
+  content:"";position:absolute;left:8px;top:10px;width:9px;height:9px;border-radius:50%;
+  background:var(--board);box-shadow:0 0 0 2px #9a9585 inset,0 0 0 1px rgba(0,0,0,.3);
+}
+.tag h3{font-size:1.5rem;font-weight:800;letter-spacing:.01em;text-transform:uppercase;margin-bottom:4px}
+.tag .kind{font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin:0}
+.tag p{margin:0;font-size:.92rem;line-height:1.45}
+.tag .row{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:6px 14px;margin-top:10px;font-family:var(--mono);font-size:.7rem}
+.tag .row>*{white-space:nowrap}
+.tag .row a{margin-left:auto}
+.tag a{color:var(--red);font-weight:600}
+.tag .n{font-family:var(--display);font-weight:900;font-size:1.35rem;color:var(--ink)}
+.tag .n small{font-family:var(--mono);font-weight:400;font-size:.62rem;color:var(--ink-2);margin-left:6px;letter-spacing:.04em}
+
+/* ---------- drawers: profiles ---------- */
+.chest{background:linear-gradient(180deg,#2a2725,#1b1918);color:#fff;padding:calc(var(--cell)*2) 0}
+.chest-in{max-width:1440px;margin:0 auto;padding:0 var(--cell)}
+.chest h2{font-size:clamp(2.2rem,4.5vw,3.6rem);font-weight:800;text-transform:uppercase;color:#fff;margin-bottom:var(--cell)}
+.chest h2 span{color:var(--lamp)}
+.drawers{display:grid;gap:12px;margin:0;padding:0;list-style:none}
+.drawer{
+  display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--cell);align-items:center;
+  padding:18px 24px;border-radius:4px;
+  background:linear-gradient(180deg,#d0192a,var(--red) 30%,#9c0d18 100%);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -3px 0 rgba(0,0,0,.4),0 6px 14px -4px rgba(0,0,0,.7);
+}
+.drawer .label{
+  display:inline-block;background:var(--paper);color:var(--ink);padding:4px 10px;border-radius:2px;
+  font-family:var(--display);font-weight:800;font-size:1.25rem;letter-spacing:.06em;text-transform:uppercase;
+  box-shadow:0 1px 0 rgba(0,0,0,.4),inset 0 0 0 1px rgba(0,0,0,.15);
+}
+.drawer .count{font-family:var(--mono);font-size:.7rem;letter-spacing:.06em;opacity:.9;margin-left:12px}
+.drawer p{margin:8px 0 0;font-size:.95rem;max-width:60ch;color:#ffe9eb}
+.drawer .pull{ /* chrome drawer pull with the command engraved */
+  display:flex;align-items:center;gap:12px;padding:10px 14px;border-radius:20px;
+  background:linear-gradient(180deg,#f2f4f5,#b8bec4 55%,#dfe3e6);color:#1a1c1e;
+  box-shadow:inset 0 1px 0 #fff,inset 0 -1px 0 rgba(0,0,0,.35),0 3px 6px rgba(0,0,0,.5);
+  max-width:100%;
+}
+.drawer>div,.drawer .pull{min-width:0}
+.drawer .pull code{min-width:0;font-size:.74rem;font-weight:600;white-space:nowrap;overflow-x:auto;text-shadow:0 1px 0 rgba(255,255,255,.8)}
+.drawer .copy{padding:6px 10px;font-size:.64rem}
+
+/* ---------- shop rules (workflow) ---------- */
+.rules{max-width:1440px;margin:0 auto;padding:calc(var(--cell)*2) var(--cell)}
+.rules-grid{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:calc(var(--cell)*2);align-items:start}
+.rules h2{font-size:clamp(2.4rem,5vw,4rem);font-weight:900;text-transform:uppercase;color:var(--shadow)}
+.rules h2 em{font-style:normal;color:var(--red)}
+.rules .note-card{margin-top:28px}
+.steps{list-style:none;margin:0;padding:0;counter-reset:step}
+.steps li{
+  counter-increment:step;display:grid;grid-template-columns:64px 1fr;gap:16px;align-items:start;
+  padding:18px 0;border-top:2px solid rgba(21,20,18,.85);
+}
+.steps li:last-child{border-bottom:2px solid rgba(21,20,18,.85)}
+.steps li::before{
+  content:counter(step,upper-roman);font-family:var(--display);font-weight:900;font-size:2.4rem;line-height:1;color:var(--shadow);
+}
+.steps h3{font-size:1.45rem;font-weight:800;text-transform:uppercase;letter-spacing:.02em}
+.steps p{margin:4px 0 8px;color:var(--ink-2);font-size:.95rem;max-width:56ch}
+.steps li>div{min-width:0}
+.steps p code{background:rgba(21,20,18,.08);color:var(--ink);padding:1px 5px;border-radius:2px;font-size:.78rem}
+.steps .cmd-wrap{display:flex;gap:10px;align-items:stretch;max-width:100%}
+.steps .cmd{display:block;flex:1 1 auto;min-width:0;background:var(--shadow);color:#fff;padding:8px 12px;border-radius:2px;font-size:.74rem;white-space:pre-wrap;overflow-wrap:anywhere;line-height:1.5}
+.steps .copy{flex:0 0 auto;align-self:center}
+
+/* ---------- inventory sheet ---------- */
+.sheet-wrap{max-width:1440px;margin:0 auto;padding:var(--cell) var(--cell) calc(var(--cell)*3)}
+.sheet{
+  position:relative;background:var(--paper);color:var(--ink);padding:calc(var(--cell)*1.5) var(--cell) var(--cell);
+  box-shadow:0 10px 30px -8px rgba(21,20,18,.5),0 0 0 1px rgba(21,20,18,.18);
+  transform:rotate(-.25deg);
+}
+.sheet::before,.sheet::after{ /* push pins */
+  content:"";position:absolute;top:-8px;width:18px;height:18px;border-radius:50%;
+  background:radial-gradient(circle at 35% 30%,#ff8f9a,var(--red) 55%,#6e0710);box-shadow:0 3px 5px rgba(0,0,0,.45);
+}
+.sheet::before{left:28px}.sheet::after{right:28px}
+.sheet h2{font-size:clamp(1.9rem,3.6vw,2.8rem);font-weight:800;text-transform:uppercase}
+.sheet .note{font-family:var(--mono);font-size:.7rem;letter-spacing:.04em;color:var(--ink-2);margin:6px 0 18px}
+table{width:100%;border-collapse:collapse;font-size:.92rem}
+th{font-family:var(--mono);font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;text-align:left;color:var(--ink-2);padding:8px 10px;border-bottom:2px solid var(--ink)}
+td{padding:9px 10px;border-bottom:1px solid rgba(21,20,18,.18);vertical-align:top}
+td:first-child{font-family:var(--mono);font-size:.76rem;font-weight:600;white-space:nowrap}
+td:first-child a{text-decoration:none;border-bottom:1.5px solid var(--red)}
+td:first-child a:hover{color:var(--red)}
+td.num{font-family:var(--display);font-weight:800;font-size:1.2rem;text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+td.num.zero{color:var(--ink-2);font-weight:600;font-size:.9rem}
+tr:hover td{background:rgba(192,17,31,.06)}
+
+/* ---------- footer ---------- */
+footer{padding:0 0 calc(var(--cell)*2);font-size:.9rem}
+footer .foot{max-width:1440px;margin:0 auto;padding-left:var(--cell);padding-right:var(--cell)}
+footer .foot{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:var(--cell);align-items:end;padding-top:calc(var(--cell)*1.5)}
+footer p{margin:0 0 6px;max-width:64ch}
+footer .links{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-size:.72rem;letter-spacing:.04em}
+
+/* ---------- responsive ---------- */
+@media (max-width:1300px){
+  .rail-in{padding:10px var(--cell)}
+  .hero{padding-top:12px}
+  .tool{height:calc(var(--cell)*9)}
+  .tool svg.shape{width:80px;height:140px}
+}
+@media (max-width:1100px){
+  .rail-in{grid-template-columns:auto 1fr;grid-template-rows:auto auto}
+  .harnesses{display:none}
+  .plate{grid-column:1/-1;justify-self:start}
+  .plate code{white-space:normal;word-break:break-all;line-height:1.4}
+}
+@media (max-width:760px){
+  body{font-size:16px}
+  .rail{position:static}
+  .rail-in{grid-template-columns:1fr;gap:12px;padding:12px var(--cell)}
+  .switch{justify-content:flex-start}
+  .hero-head,.rules-grid,footer .foot{grid-template-columns:minmax(0,1fr)}
+  .steps li{grid-template-columns:48px minmax(0,1fr)}
+  .steps li::before{font-size:1.9rem}
+  .stencil{font-size:clamp(2.6rem,13vw,4rem)}
+  .brand b{font-size:1.7rem}
+  .hero{padding-left:12px;padding-right:12px}
+  .tools{grid-template-columns:repeat(3,calc(var(--cell)*5));justify-content:center}
+  .tool{height:calc(var(--cell)*9)}
+  .tool svg.shape{width:72px;height:126px}
+  .tool .name{max-width:calc(var(--cell)*4.8);font-size:.58rem}
+  .tag-wrap{position:static;height:auto;margin-top:var(--cell);pointer-events:auto}
+  .tag-wrap .tag{position:relative;width:auto;opacity:1;transform:none;pointer-events:auto}
+  .drawer{grid-template-columns:1fr}
+  thead{display:none}
+  tbody tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:10px 0;border-bottom:1px solid rgba(21,20,18,.18)}
+  td{display:block;padding:0;border:0}
+  td:first-child{white-space:normal;word-break:break-word}
+  td:nth-child(2){font-family:var(--mono);font-size:.64rem;letter-spacing:.04em;color:var(--ink-2)}
+  td:nth-child(3){grid-column:1/-1;font-size:.88rem;color:var(--ink-2)}
+  td.num{grid-column:2;grid-row:1/3}
+  .sheet{transform:none;padding:calc(var(--cell)*1.25) 14px var(--cell)}
+}
+</style>
+</head>
+<body>
+
+<!-- tool silhouettes: one shared scale, viewBox 0 0 120 220, hanging from the hook above.
+     .s = steel  .g = grip  .h = hole (reads the board colour in shadow mode) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="hook" viewBox="0 0 24 36">
+    <path d="M12 0v4M12 4c-5 0-8 3-8 8v6a8 8 0 0 0 16 0v-3" fill="none" stroke="#6b7178" stroke-width="3" stroke-linecap="round"/>
+    <path d="M12 4c-5 0-8 3-8 8v6a8 8 0 0 0 16 0v-3" fill="none" stroke="#d7dbdf" stroke-width="1" stroke-linecap="round" transform="translate(-.6,-.6)"/>
+  </symbol>
+  <symbol id="t-level" viewBox="0 0 120 220"><rect fill="var(--c-s)" x="40" y="22" width="40" height="188" rx="4"/><rect fill="var(--c-h)" x="51" y="60" width="18" height="34" rx="9"/><rect fill="var(--c-h)" x="51" y="150" width="18" height="34" rx="9"/><rect fill="var(--c-g)" x="55" y="72" width="10" height="10" rx="5"/><rect fill="var(--c-g)" x="55" y="162" width="10" height="10" rx="5"/><rect fill="var(--c-h)" x="48" y="112" width="24" height="12" rx="2"/></symbol>
+  <symbol id="t-caliper" viewBox="0 0 120 220"><rect fill="var(--c-s)" x="58" y="26" width="12" height="184" rx="2"/><path fill="var(--c-s)" d="M30 26h40v36H58V44H30z"/><rect fill="var(--c-g)" x="54" y="98" width="24" height="46" rx="3"/><path fill="var(--c-s)" d="M30 98h40v14H30z"/><circle fill="var(--c-s)" cx="80" cy="132" r="9"/><rect fill="var(--c-h)" x="61" y="60" width="6" height="30"/><rect fill="var(--c-h)" x="61" y="150" width="6" height="52"/></symbol>
+  <symbol id="t-square" viewBox="0 0 120 220"><path fill="var(--c-s)" d="M36 22h28v168h48v20H36z"/><rect fill="var(--c-g)" x="36" y="22" width="28" height="30"/><rect fill="var(--c-h)" x="45" y="70" width="10" height="10" rx="5"/><rect fill="var(--c-h)" x="46" y="100" width="8" height="70"/></symbol>
+  <symbol id="t-magnifier" viewBox="0 0 120 220"><circle fill="var(--c-s)" cx="56" cy="74" r="40"/><circle fill="var(--c-h)" cx="56" cy="74" r="28"/><path fill="var(--c-g)" d="M78 104l16-10 20 90-18 8z"/><rect fill="var(--c-s)" x="74" y="98" width="22" height="16" rx="3" transform="rotate(-30 85 106)"/></symbol>
+  <symbol id="t-hammer" viewBox="0 0 120 220"><rect fill="var(--c-g)" x="52" y="70" width="16" height="140" rx="6"/><path fill="var(--c-s)" d="M26 32h70v40H26z M26 32l14-18 12 8-8 10z"/><rect fill="var(--c-h)" x="56" y="78" width="8" height="8" rx="4"/></symbol>
+  <symbol id="t-scissors" viewBox="0 0 120 220"><path fill="var(--c-s)" d="M40 22h16l10 96-14 6z"/><path fill="var(--c-s)" d="M80 22H64l-10 96 14 6z"/><circle fill="var(--c-s)" cx="60" cy="122" r="7"/><ellipse fill="var(--c-g)" cx="44" cy="172" rx="17" ry="32"/><ellipse fill="var(--c-h)" cx="44" cy="174" rx="8" ry="22"/><ellipse fill="var(--c-g)" cx="76" cy="172" rx="17" ry="32"/><ellipse fill="var(--c-h)" cx="76" cy="174" rx="8" ry="22"/></symbol>
+  <symbol id="t-file" viewBox="0 0 120 220"><path fill="var(--c-s)" d="M44 22h32l-4 132H48z"/><rect fill="var(--c-g)" x="52" y="154" width="16" height="56" rx="6"/><path fill="var(--c-h)" d="M50 40h20v3H50zm0 14h20v3H50zm0 14h20v3H50zm0 14h20v3H50zm0 14h20v3H50zm0 14h20v3H50zm0 14h20v3H50z"/></symbol>
+  <symbol id="t-radio" viewBox="0 0 120 220"><rect fill="var(--c-s)" x="46" y="22" width="8" height="52" rx="3"/><rect fill="var(--c-g)" x="36" y="70" width="48" height="140" rx="8"/><rect fill="var(--c-h)" x="46" y="86" width="28" height="4" rx="2"/><rect fill="var(--c-h)" x="46" y="96" width="28" height="4" rx="2"/><rect fill="var(--c-h)" x="46" y="106" width="28" height="4" rx="2"/><rect fill="var(--c-s)" x="54" y="150" width="14" height="16" rx="3"/><rect fill="var(--c-s)" x="46" y="176" width="28" height="8" rx="2"/></symbol>
+  <symbol id="t-flashlight" viewBox="0 0 120 220"><rect fill="var(--c-s)" x="34" y="22" width="52" height="44" rx="5"/><rect fill="var(--c-h)" x="40" y="28" width="40" height="10" rx="2"/><rect fill="var(--c-g)" x="44" y="66" width="32" height="144" rx="9"/><rect fill="var(--c-s)" x="54" y="90" width="12" height="20" rx="4"/><rect fill="var(--c-s)" x="44" y="190" width="32" height="8"/></symbol>
+  <symbol id="t-screwdriver" viewBox="0 0 120 220"><rect fill="var(--c-s)" x="56" y="30" width="8" height="90"/><path fill="var(--c-s)" d="M54 22h12l-2 10H56z"/><rect fill="var(--c-g)" x="46" y="118" width="28" height="92" rx="11"/><rect fill="var(--c-h)" x="52" y="136" width="4" height="56" rx="2"/><rect fill="var(--c-h)" x="64" y="136" width="4" height="56" rx="2"/></symbol>
+  <symbol id="t-key" viewBox="0 0 120 220"><circle fill="var(--c-s)" cx="60" cy="52" r="26"/><circle fill="var(--c-h)" cx="60" cy="48" r="9"/><rect fill="var(--c-s)" x="53" y="74" width="14" height="136" rx="3"/><rect fill="var(--c-s)" x="67" y="150" width="18" height="10"/><rect fill="var(--c-s)" x="67" y="172" width="14" height="10"/><rect fill="var(--c-s)" x="67" y="194" width="20" height="10"/><rect fill="var(--c-g)" x="55" y="90" width="10" height="26" rx="3"/></symbol>
+  <symbol id="t-tape" viewBox="0 0 120 220"><rect fill="var(--c-g)" x="24" y="58" width="72" height="72" rx="16"/><circle fill="var(--c-h)" cx="56" cy="94" r="11"/><rect fill="var(--c-s)" x="60" y="130" width="42" height="14" rx="2"/><rect fill="var(--c-s)" x="96" y="144" width="8" height="66"/><rect fill="var(--c-s)" x="86" y="204" width="24" height="8" rx="2"/><rect fill="var(--c-s)" x="40" y="46" width="32" height="14" rx="3"/><rect fill="var(--c-h)" x="30" y="118" width="60" height="4"/></symbol>
+  <symbol id="t-brush" viewBox="0 0 120 220"><rect fill="var(--c-g)" x="50" y="22" width="20" height="112" rx="7"/><circle fill="var(--c-h)" cx="60" cy="36" r="4"/><rect fill="var(--c-s)" x="42" y="132" width="36" height="26" rx="2"/><path fill="var(--c-s)" d="M42 158h36l6 52H36z"/><path fill="var(--c-h)" d="M50 170h2v34h-2zm9 0h2v34h-2zm9 0h2v34h-2z"/></symbol>
+  <symbol id="t-ratchet" viewBox="0 0 120 220"><circle fill="var(--c-s)" cx="60" cy="54" r="26"/><rect fill="var(--c-h)" x="52" y="46" width="16" height="16" rx="2"/><rect fill="var(--c-s)" x="50" y="78" width="20" height="30"/><rect fill="var(--c-g)" x="51" y="104" width="18" height="106" rx="8"/><rect fill="var(--c-h)" x="56" y="122" width="8" height="70" rx="4"/></symbol>
+  <symbol id="t-spray" viewBox="0 0 120 220"><rect fill="var(--c-s)" x="52" y="22" width="16" height="22" rx="3"/><rect fill="var(--c-s)" x="66" y="26" width="14" height="8" rx="2"/><rect fill="var(--c-s)" x="40" y="44" width="40" height="18" rx="4"/><rect fill="var(--c-g)" x="34" y="60" width="52" height="150" rx="10"/><rect fill="var(--c-h)" x="34" y="112" width="52" height="4"/><rect fill="var(--c-h)" x="34" y="160" width="52" height="4"/></symbol>
+  <symbol id="t-clipboard" viewBox="0 0 120 220"><rect fill="var(--c-g)" x="26" y="40" width="68" height="170" rx="5"/><rect fill="var(--c-s)" x="42" y="22" width="36" height="30" rx="7"/><rect fill="var(--c-h)" x="52" y="30" width="16" height="8" rx="4"/><rect fill="var(--c-h)" x="38" y="74" width="44" height="5" rx="2"/><rect fill="var(--c-h)" x="38" y="92" width="44" height="5" rx="2"/><rect fill="var(--c-h)" x="38" y="110" width="30" height="5" rx="2"/><rect fill="var(--c-h)" x="38" y="140" width="44" height="5" rx="2"/><rect fill="var(--c-h)" x="38" y="158" width="36" height="5" rx="2"/></symbol>
+  <symbol id="t-clamp" viewBox="0 0 120 220"><path fill="var(--c-s)" d="M36 30h64v16H52v122h48v16H36z"/><rect fill="var(--c-g)" x="86" y="60" width="10" height="112"/><rect fill="var(--c-s)" x="70" y="176" width="42" height="10" rx="3"/><rect fill="var(--c-s)" x="80" y="52" width="22" height="10" rx="2"/><rect fill="var(--c-s)" x="88" y="186" width="6" height="24"/></symbol>
+  <symbol id="t-gauge" viewBox="0 0 120 220"><circle fill="var(--c-s)" cx="60" cy="76" r="44"/><circle fill="var(--c-h)" cx="60" cy="76" r="34"/><path fill="var(--c-g)" d="M60 76l-22-22 4-4 22 22z"/><circle fill="var(--c-s)" cx="60" cy="76" r="5"/><path fill="var(--c-s)" d="M42 60h3v3h-3zm12-10h3v3h-3zm12 0h3v3h-3zm12 10h3v3h-3z"/><rect fill="var(--c-s)" x="53" y="118" width="14" height="92" rx="2"/><rect fill="var(--c-s)" x="42" y="128" width="36" height="18" rx="2"/></symbol>
+  <symbol id="t-benchbrush" viewBox="0 0 120 220"><rect fill="var(--c-g)" x="48" y="22" width="24" height="104" rx="9"/><circle fill="var(--c-h)" cx="60" cy="38" r="5"/><rect fill="var(--c-s)" x="30" y="126" width="60" height="26" rx="3"/><path fill="var(--c-s)" d="M30 152h60l6 58H24z"/><path fill="var(--c-h)" d="M38 164h2v40h-2zm9 0h2v40h-2zm9 0h2v40h-2zm9 0h2v40h-2zm9 0h2v40h-2zm9 0h2v40h-2z"/></symbol>
+  <symbol id="t-chain" viewBox="0 0 120 220"><ellipse fill="var(--c-s)" cx="60" cy="56" rx="22" ry="34"/><ellipse fill="var(--c-h)" cx="60" cy="56" rx="10" ry="21"/><ellipse fill="var(--c-s)" cx="60" cy="116" rx="22" ry="34"/><ellipse fill="var(--c-h)" cx="60" cy="116" rx="10" ry="21"/><ellipse fill="var(--c-s)" cx="60" cy="176" rx="22" ry="34"/><ellipse fill="var(--c-h)" cx="60" cy="176" rx="10" ry="21"/><rect fill="var(--c-g)" x="50" y="80" width="20" height="12" rx="6"/><rect fill="var(--c-g)" x="50" y="140" width="20" height="12" rx="6"/></symbol>
+  <symbol id="t-pencil" viewBox="0 0 120 220"><rect fill="var(--c-s)" x="51" y="22" width="18" height="10" rx="4"/><rect fill="var(--c-s)" x="51" y="32" width="18" height="16"/><rect fill="var(--c-g)" x="51" y="48" width="18" height="140"/><path fill="var(--c-s)" d="M51 188h18l-9 26z"/><rect fill="var(--c-h)" x="57" y="60" width="2" height="116"/><rect fill="var(--c-h)" x="61" y="60" width="2" height="116"/></symbol>
+  <symbol id="t-padlock" viewBox="0 0 120 220"><path fill="var(--c-s)" d="M36 96V62a24 24 0 0 1 48 0v34H72V62a12 12 0 0 0-24 0v34z"/><rect fill="var(--c-s)" x="24" y="88" width="72" height="122" rx="10"/><circle fill="var(--c-h)" cx="60" cy="140" r="9"/><rect fill="var(--c-h)" x="55" y="146" width="10" height="26" rx="3"/><rect fill="var(--c-g)" x="24" y="88" width="72" height="16" rx="6"/></symbol>
+  <symbol id="t-drill" viewBox="0 0 120 220"><rect fill="var(--c-g)" x="16" y="52" width="80" height="48" rx="12"/><rect fill="var(--c-s)" x="92" y="60" width="24" height="32" rx="5"/><rect fill="var(--c-s)" x="110" y="68" width="8" height="16"/><rect fill="var(--c-g)" x="36" y="98" width="30" height="80" rx="7"/><rect fill="var(--c-s)" x="66" y="104" width="10" height="22" rx="3"/><rect fill="var(--c-s)" x="26" y="176" width="50" height="34" rx="5"/><rect fill="var(--c-h)" x="30" y="66" width="40" height="6" rx="3"/><rect fill="var(--c-h)" x="30" y="78" width="26" height="6" rx="3"/></symbol>
+</svg>
+
+<header class="rail">
+  <div class="rail-in">
+    <a class="brand" href="https://github.com/cskwork/agent-skills"><b>agent-skills</b><span>cskwork · shop board</span></a>
+    <div class="harnesses" aria-label="Harnesses this board hangs in"><span>Claude Code</span><span>Codex</span><span>OpenCode</span><span>Pi</span><span>Hermes</span></div>
+    <div class="switch">
+      <span class="lbl" id="lbl-empty">Empty</span>
+      <button id="hang" role="switch" aria-checked="false" aria-labelledby="lbl-hung" title="Show the board with the tools hung"></button>
+      <span class="lbl" id="lbl-hung">Hung</span>
+    </div>
+    <div class="plate">
+      <code id="cmd">npx skills add cskwork/agent-skills -g -a claude-code codex opencode -s '*' -y</code>
+      <button class="copy" type="button" data-copy="#cmd" data-hang="true">Copy</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="board hero" aria-labelledby="hero-title">
+    <div class="hero-head">
+      <h1 id="hero-title" class="stencil">Twenty-three tools.<br><em>One line</em> hangs them all.</h1>
+      <div class="note-card"><p class="lede">The shadow board for the agent skills I use every day. One repo is the source of truth: <strong>npx skills</strong> hangs each tool in Claude Code, Codex and OpenCode, and <strong>npx skills update -g</strong> keeps every machine in step. The painted shadows are what a fresh machine looks like. Tap or hover a shadow to read its tag; copy the line to hang them.</p></div>
+    </div>
+
+    <ul class="tools" id="tools">
+      <li class="tool" style="--i:0" data-name="verification-before-completion" data-tool="Spirit level" data-uses="78" data-desc="Use before claiming work is complete, fixed, or passing: run the verification commands and read the output before any success claim. Evidence before assertions, always."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-level"/></svg><span class="name">verification-before-completion</span><span class="uses" aria-hidden="true">78</span></button></li>
+      <li class="tool" style="--i:1" data-name="gh-release" data-tool="Hammer" data-uses="37" data-desc="Cut a versioned GitHub release: tag, push, and publish release notes from the changelog. “Do a release”, “release vX”, “릴리스 해줘”."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-hammer"/></svg><span class="name">gh-release</span><span class="uses" aria-hidden="true">37</span></button></li>
+      <li class="tool" style="--i:2" data-name="unslop" data-tool="Scissors" data-uses="17" data-desc="Cut AI tells from any writing. Must always apply."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-scissors"/></svg><span class="name">unslop</span><span class="uses" aria-hidden="true">17</span></button></li>
+      <li class="tool" style="--i:3" data-name="call-agent" data-tool="Two-way radio" data-uses="17" data-desc="Delegate a bounded task to a user-named peer CLI, or fill a capability the host lacks. Codex, Claude, Antigravity, Kiro, NotebookLM, ChatGPT Pro."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-radio"/></svg><span class="name">call-agent</span><span class="uses" aria-hidden="true">17</span></button></li>
+      <li class="tool" style="--i:4" data-name="browser-qa" data-tool="Flashlight" data-uses="11" data-desc="Browser QA with reviewable YAML scenarios, engine selection, and browser/API evidence. URL checks, regression runs, recording, scheduling, dashboards."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-flashlight"/></svg><span class="name">browser-qa</span><span class="uses" aria-hidden="true">11</span></button></li>
+      <li class="tool" style="--i:5" data-name="diagnose" data-tool="Magnifier" data-uses="11" data-desc="Disciplined diagnosis loop for hard bugs and performance regressions: reproduce, minimise, hypothesise, instrument, fix, regression-test."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-magnifier"/></svg><span class="name">diagnose</span><span class="uses" aria-hidden="true">11</span></button></li>
+      <li class="tool" style="--i:6" data-name="superpm" data-tool="Clipboard" data-uses="9" data-desc="Focused PM artifacts verified by a critic: PRDs, strategy, OKRs, roadmaps, specs, research, analytics, GTM, growth, pricing, positioning, release notes, retros."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-clipboard"/></svg><span class="name">superpm</span><span class="uses" aria-hidden="true">9</span></button></li>
+      <li class="tool" style="--i:7" data-name="create-verification-skill" data-tool="Tape measure" data-uses="7" data-desc="Generate a project-local verification skill that drives your app the way a user does, in any language, framework, or platform."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-tape"/></svg><span class="name">create-verification-skill</span><span class="uses" aria-hidden="true">7</span></button></li>
+      <li class="tool" style="--i:8" data-name="refine-skill-terse" data-tool="File" data-uses="6" data-desc="Tighten a SKILL.md so agents, not humans, read it fast: cut prose, keep the procedure, move rationale out."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-file"/></svg><span class="name">refine-skill-terse</span><span class="uses" aria-hidden="true">6</span></button></li>
+      <li class="tool" style="--i:9" data-name="impeccable" data-tool="Paintbrush" data-uses="5" data-desc="Design, redesign, critique, audit, polish, harden, animate, typeset or adapt a frontend interface. Websites, product UI, dashboards, forms, design systems. This page was built with it."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-brush"/></svg><span class="name">impeccable</span><span class="uses" aria-hidden="true">5</span></button></li>
+      <li class="tool" style="--i:10" data-name="sdlc-kit" data-tool="Ratchet" data-uses="5" data-desc="Gated SDLC loop with human approvals: “start SDLC”, “sdlc status”, “continue the loop”, “through the gates”, or an incident in a project with .sdlc/."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-ratchet"/></svg><span class="name">sdlc-kit</span><span class="uses" aria-hidden="true">5</span></button></li>
+      <li class="tool" style="--i:11" data-name="verify" data-tool="Caliper" data-uses="5" data-desc="Verify changed service behavior with replayable build, static-analysis, review, and HTTP scenario receipts. Endpoint verification or a merge-readiness report."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-caliper"/></svg><span class="name">verify</span><span class="uses" aria-hidden="true">5</span></button></li>
+      <li class="tool" style="--i:12" data-name="gpt-image-2" data-tool="Spray can" data-uses="4" data-desc="Generate and edit images with GPT Image 2 through your existing ChatGPT plan via the local Codex CLI: text-to-image, image-to-image, style transfer, multi-reference composition."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-spray"/></svg><span class="name">gpt-image-2</span><span class="uses" aria-hidden="true">4</span></button></li>
+      <li class="tool" style="--i:13" data-name="agent-browser" data-tool="Screwdriver" data-uses="3" data-desc="Browser automation CLI for agents: navigate pages, fill forms, click, screenshot, extract data, test web apps, log in, automate any browser task."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-screwdriver"/></svg><span class="name">agent-browser</span><span class="uses" aria-hidden="true">3</span></button></li>
+      <li class="tool" style="--i:14" data-name="sync-skill" data-tool="Chain" data-uses="2" data-desc="Deploy one skill to every coding agent by keeping one canonical directory and symlinking it into each agent's skills dir. One source, no drift."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-chain"/></svg><span class="name">sync-skill</span><span class="uses" aria-hidden="true">2</span></button></li>
+      <li class="tool" style="--i:15" data-name="aside-browser" data-tool="Key" data-uses="1" data-desc="Read when you need a browser that works across the user's logged-in websites (Gmail, Slack, cloud consoles) or their personal context like memory and history."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-key"/></svg><span class="name">aside-browser</span><span class="uses" aria-hidden="true">1</span></button></li>
+      <li class="tool" style="--i:16" data-name="streamdeck-agent-cockpit" data-tool="Power drill" data-uses="1" data-desc="A standalone Stream Deck cockpit for Claude Code, Codex, Pi, JCode, or other terminal agents: personalize buttons, launch and steer sessions from the deck."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-drill"/></svg><span class="name">streamdeck-agent-cockpit</span><span class="uses" aria-hidden="true">1</span></button></li>
+      <li class="tool" style="--i:17" data-name="verification-planning" data-tool="Carpenter's square" data-uses="0" data-desc="Verification planning before non-trivial coding work: a feature, bug fix, refactor, cross-system change, or any high-confidence claim."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-square"/></svg><span class="name">verification-planning</span><span class="uses" aria-hidden="true">–</span></button></li>
+      <li class="tool" style="--i:18" data-name="skill-lab" data-tool="C-clamp" data-uses="0" data-desc="Build and iteratively improve agent skills with evaluations, benchmarks, and trigger optimization. Compare versions, measure performance, optimize descriptions."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-clamp"/></svg><span class="name">skill-lab</span><span class="uses" aria-hidden="true">–</span></button></li>
+      <li class="tool" style="--i:19" data-name="skill-usage-stats" data-tool="Dial gauge" data-uses="0" data-desc="An HTML dashboard of Claude/Codex skill and prompt usage: counts, last-used dates, session reach, disk size. The numbers on this board come from it."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-gauge"/></svg><span class="name">skill-usage-stats</span><span class="uses" aria-hidden="true">–</span></button></li>
+      <li class="tool" style="--i:20" data-name="skill-cleanup" data-tool="Bench brush" data-uses="0" data-desc="Archive unused or stale Claude/Codex skills based on usage stats without deleting content."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-benchbrush"/></svg><span class="name">skill-cleanup</span><span class="uses" aria-hidden="true">–</span></button></li>
+      <li class="tool" style="--i:21" data-name="naver-blog-poster" data-tool="Pencil" data-uses="0" data-desc="Create, migrate, or edit Naver blog posts in a saved Korean reading format: native subheadings, centered text, responsive paragraph flow. Tistory migration included."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-pencil"/></svg><span class="name">naver-blog-poster</span><span class="uses" aria-hidden="true">–</span></button></li>
+      <li class="tool" style="--i:22" data-name="naver-cloud-vpn" data-tool="Padlock" data-uses="0" data-desc="Inspect, verify credentials for, connect, or troubleshoot the NAVER Cloud SSL VPN client on macOS without GUI automation."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-padlock"/></svg><span class="name">naver-cloud-vpn</span><span class="uses" aria-hidden="true">–</span></button></li>
+    </ul>
+
+    <div class="tag-wrap">
+      <aside class="tag" id="tag" aria-live="polite">
+        <h3 id="tag-name">Pick a tool</h3>
+        <p id="tag-desc">Tap, hover, or tab to any painted shadow on the board to read what the skill does. The number under each tool is my own use count over the last 90 days, from skill-usage-stats.</p>
+        <div class="row"><span class="n" id="tag-uses"></span><span class="kind" id="tag-kind">Inventory tag</span><a id="tag-link" href="https://github.com/cskwork/agent-skills/tree/main/skills">Browse skills/ on GitHub →</a></div>
+      </aside>
+    </div>
+  </section>
+
+  <section class="chest" aria-labelledby="drawers-title">
+    <div class="chest-in">
+      <h2 id="drawers-title">Three drawers. <span>Pull the one you need.</span></h2>
+      <ul class="drawers">
+        <li class="drawer">
+          <div><span class="label">core</span><span class="count">14 skills · the default set</span><p>The verification loop, diagnosis, release, delegation, browser QA, the SDLC gates and the writing tools. What a working machine needs on day one.</p></div>
+          <div class="pull"><code id="cmd-core">./install.sh -p core</code><button class="copy" type="button" data-copy="#cmd-core">Copy</button></div>
+        </li>
+        <li class="drawer">
+          <div><span class="label">all</span><span class="count">23 skills · everything on the board</span><p>Every tool above, including the image, Naver, Stream Deck and PM tools.</p></div>
+          <div class="pull"><code id="cmd-all">./install.sh -p all</code><button class="copy" type="button" data-copy="#cmd-all">Copy</button></div>
+        </li>
+        <li class="drawer">
+          <div><span class="label">third-party</span><span class="count">17 external repos · installed alongside</span><p>The skills I use that live in other people's repos, and in my own standalone ones. One flag pulls them with the same installer.</p></div>
+          <div class="pull"><code id="cmd-tp">./install.sh -p all -t</code><button class="copy" type="button" data-copy="#cmd-tp">Copy</button></div>
+        </li>
+      </ul>
+    </div>
+  </section>
+
+  <section class="board rules" aria-labelledby="rules-title">
+    <div class="rules-grid">
+      <div>
+        <h2 id="rules-title">Shop rules.<br><em>Three of them.</em></h2>
+        <div class="note-card"><p class="lede">No per-harness copies, no sync daemon. The clone is where you edit; the harnesses only ever hold what the repo holds.</p></div>
+      </div>
+      <div class="sheet flat"><ol class="steps">
+        <li><div><h3>Hang the board</h3><p>On any machine, after <code>gh auth login</code> if you also want the private companion. The installer clones into <code>~/.agents/sources/cskwork/agent-skills</code> and links each harness to it.</p><div class="cmd-wrap"><code class="cmd" id="cmd-1">npx skills add cskwork/agent-skills -g -a claude-code codex opencode -s '*' -y</code><button class="copy" type="button" data-copy="#cmd-1">Copy</button></div></div></li>
+        <li><div><h3>Edit in the clone, push</h3><p>A skill is a folder with a SKILL.md. Change it where the clone lives, commit, push. Nothing else to keep in step.</p><div class="cmd-wrap"><code class="cmd" id="cmd-2">cd ~/.agents/sources/cskwork/agent-skills &amp;&amp; git commit -am "unslop: tighter" &amp;&amp; git push</code><button class="copy" type="button" data-copy="#cmd-2">Copy</button></div></div></li>
+        <li><div><h3>Update everywhere else</h3><p>Same command on every other machine. Work-only tools hang on the private board, <code>agent-skills-private</code>, whose installer pulls this one first.</p><div class="cmd-wrap"><code class="cmd" id="cmd-3">npx skills update -g</code><button class="copy" type="button" data-copy="#cmd-3">Copy</button></div></div></li>
+      </ol></div>
+    </div>
+  </section>
+
+  <section class="board sheet-wrap" aria-labelledby="sheet-title">
+    <div class="sheet">
+      <h2 id="sheet-title">Inventory sheet</h2>
+      <p class="note">Owner's own use, 2026-06-19 to 2026-09-17, counted by skill-usage-stats. No stars, downloads or users are claimed.</p>
+      <table>
+        <thead><tr><th scope="col">Skill</th><th scope="col">On the board as</th><th scope="col">What it does</th><th scope="col" style="text-align:right">Uses / 90d</th></tr></thead>
+        <tbody id="sheet-body"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<footer class="base">
+  <div class="foot">
+    <div>
+      <p>Skills follow the standard <code>skills/&lt;name&gt;/SKILL.md</code> layout. The installer is <a href="https://github.com/vercel-labs/skills">vercel-labs/skills</a>. Fonts: Big Shoulders Display, Archivo, Martian Mono (SIL OFL).</p>
+      <p lang="ko">개인 스킬의 원본 저장소입니다. 새 PC에서는 위의 한 줄로 설치하고, 다른 PC에서는 <code>npx skills update -g</code>로 받습니다.</p>
+    </div>
+    <div class="links"><a href="https://github.com/cskwork/agent-skills">GitHub</a><a href="https://github.com/cskwork/agent-skills/blob/main/README.md">README</a><a href="https://github.com/cskwork/agent-skills/blob/main/install.sh">install.sh</a><a href="https://github.com/cskwork">@cskwork</a></div>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var tools=document.getElementById('tools');
+  var hang=document.getElementById('hang');
+  var lblE=document.getElementById('lbl-empty'),lblH=document.getElementById('lbl-hung');
+  function setHung(on){
+    tools.classList.toggle('hung',on);
+    hang.setAttribute('aria-checked',on?'true':'false');
+    lblH.classList.toggle('on',on);lblE.classList.toggle('on',!on);
+  }
+  lblE.classList.add('on');
+  hang.addEventListener('click',function(){setHung(hang.getAttribute('aria-checked')!=='true');});
+
+  // copy buttons
+  document.querySelectorAll('.copy').forEach(function(b){
+    b.addEventListener('click',function(){
+      var el=document.querySelector(b.getAttribute('data-copy'));
+      var text=el.textContent;
+      var done=function(){
+        b.textContent='Copied';b.setAttribute('data-state','done');
+        if(b.hasAttribute('data-hang'))setHung(true);
+        setTimeout(function(){b.textContent='Copy';b.removeAttribute('data-state');},1800);
+      };
+      if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(done,function(){fallback(el);done();});}
+      else{fallback(el);done();}
+    });
+  });
+  function fallback(el){var r=document.createRange();r.selectNodeContents(el);var s=getSelection();s.removeAllRanges();s.addRange(r);try{document.execCommand('copy')}catch(e){}}
+
+  // inventory tag
+  var tag={kind:document.getElementById('tag-kind'),name:document.getElementById('tag-name'),desc:document.getElementById('tag-desc'),uses:document.getElementById('tag-uses'),link:document.getElementById('tag-link')};
+  var items=[].slice.call(tools.querySelectorAll('.tool'));
+  var current=null;
+  var tagEl=document.getElementById('tag');
+  function hide(){if(!tools.querySelector('.tool.open'))tagEl.classList.remove('show');}
+  var inFlow=function(){return getComputedStyle(tagEl.parentElement).position==='static';};
+  tools.addEventListener('mouseleave',function(e){if(!(e.relatedTarget&&tagEl.contains(e.relatedTarget)))hide();});
+  tagEl.addEventListener('mouseleave',function(e){if(!(e.relatedTarget&&tools.contains(e.relatedTarget)))hide();});
+  tools.addEventListener('focusout',function(e){if(!tools.contains(e.relatedTarget))hide();});
+  function show(li){
+    current=li;tagEl.classList.add('show');
+    tag.kind.textContent=li.dataset.tool;
+    tag.name.textContent=li.dataset.name;
+    tag.desc.textContent=li.dataset.desc;
+    var u=+li.dataset.uses;
+    tag.uses.innerHTML=(u?u:'0')+'<small>uses · 90 days</small>';
+    tag.link.href='https://github.com/cskwork/agent-skills/tree/main/skills/'+li.dataset.name;
+    tag.link.textContent='Open SKILL.md →';
+  }
+  items.forEach(function(li){
+    var btn=li.querySelector('button');
+    btn.addEventListener('mouseenter',function(){if(!tools.querySelector('.tool.open'))show(li);});
+    btn.addEventListener('focus',function(){show(li);});
+    btn.addEventListener('click',function(){
+      var open=li.classList.contains('open');
+      items.forEach(function(o){o.classList.remove('open');o.querySelector('button').setAttribute('aria-expanded','false');});
+      if(!open){li.classList.add('open');btn.setAttribute('aria-expanded','true');show(li);if(inFlow())tagEl.scrollIntoView({block:'nearest',behavior:'smooth'});}
+    });
+  });
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){items.forEach(function(o){o.classList.remove('open');o.querySelector('button').setAttribute('aria-expanded','false');});tagEl.classList.remove('show');}});
+
+  // inventory sheet from the board's own data
+  var body=document.getElementById('sheet-body');
+  items.forEach(function(li){
+    var tr=document.createElement('tr');
+    var u=+li.dataset.uses;
+    tr.innerHTML='<td><a href="https://github.com/cskwork/agent-skills/tree/main/skills/'+li.dataset.name+'">'+li.dataset.name+'</a></td><td>'+li.dataset.tool+'</td><td>'+li.dataset.desc.replace(/&/g,'&amp;').replace(/</g,'&lt;')+'</td><td class="num'+(u?'':' zero')+'">'+(u?u:'0')+'</td>';
+    body.appendChild(tr);
+  });
+})();
+</script>
+</body>
+</html>
