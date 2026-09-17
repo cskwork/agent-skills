@@ -1,0 +1,14 @@
+# Every skill in this repo
+aside-browser
+diagnose
+gh-release
+naver-blog-poster
+naver-cloud-vpn
+refine-skill-terse
+skill-cleanup
+skill-usage-stats
+streamdeck-agent-cockpit
+superpm
+sync-skill
+unslop
+verification-planning

@@ -1,0 +1,7 @@
+# Docs and config: normalize to LF in the repo for cross-platform consistency.
+*.md   text eol=lf
+*.json text eol=lf
+*.mjs  text eol=lf
+
+# Binary assets: never touch.
+*.png  binary

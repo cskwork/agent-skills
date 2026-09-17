@@ -1,0 +1,20 @@
+# External skill repos installed alongside this one.
+# Format: <owner/repo> <skill> [<skill> ...]   (# = comment)
+addyosmani/agent-skills api-and-interface-design
+tt-a1i/archify archify
+Nutlope/hallmark hallmark
+iOfficeAI/OfficeCLI morph-ppt morph-ppt-3d
+mattpocock/skills wait-what
+# cskwork standalone skill repos (each is its own source of truth)
+cskwork/clean-code clean-code
+cskwork/context-diet-skill context-diet
+cskwork/debug-code-skill debug-code
+cskwork/skill-curator skill-curator
+cskwork/canvas-ui-skill canvas-ui-design
+cskwork/handoff-spec-kit handoff-spec
+cskwork/improve-code-skill improve-code
+cskwork/playmcp-reg-skill playmcp-reg-skill
+cskwork/prompter prompter
+cskwork/reddit-skill reddit-poster
+cskwork/supermarketer-skill supermarketer
+cskwork/promptbox glm-vision

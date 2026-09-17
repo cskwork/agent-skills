@@ -1,0 +1,96 @@
+<!doctype html>
+<!-- 검증 교육 콘텐츠 API · 화면설계서 보드 (Mode B 기획 초안) · 외부 의존 0 -->
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>검증 교육 콘텐츠 API · 화면설계서 보드</title>
+<style>
+  :root{--primary:#1f5fd0;--primary-strong:#163b86;--ink:#16203a;--mut:#5b6a86;--line:#e1e7f0;--bg:#f4f7fc;--trust:#0a7d6b}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.6 -apple-system,"Segoe UI",Roboto,"Noto Sans KR",sans-serif}
+  .head{max-width:1180px;margin:0 auto;padding:40px 28px 6px}
+  .eyebrow{margin:0 0 6px;color:var(--primary-strong);font-weight:700;font-size:12px;letter-spacing:.08em;text-transform:uppercase}
+  .head h1{margin:0 0 8px;font-size:29px}
+  .head p{margin:0;color:var(--mut);max-width:82ch}
+  .badge{display:inline-flex;align-items:center;gap:4px;background:#dff3ee;color:var(--trust);border:1px solid #abe0d4;border-radius:999px;padding:1px 9px;font-size:11px;font-weight:800}
+  .group{max-width:1180px;margin:26px auto 0;padding:0 28px}
+  .group h2{margin:0;font-size:16px}.group span{color:var(--mut);font-size:13px}
+  .grid{max-width:1180px;margin:0 auto;padding:14px 28px 8px;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:20px}
+  .card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:16px;overflow:hidden;box-shadow:0 1px 3px rgba(20,40,80,.06);transition:transform .12s,box-shadow .12s}
+  .card:hover{transform:translateY(-3px);box-shadow:0 16px 32px rgba(20,56,93,.14)}
+  .thumb{position:relative;display:block;height:172px;overflow:hidden;background:#eef2f7;border-bottom:1px solid var(--line)}
+  .thumb iframe{position:absolute;top:0;left:0;width:250%;height:250%;border:0;transform:scale(.4);transform-origin:top left;pointer-events:none;background:#fff}
+  .thumb .ph{display:flex;align-items:center;justify-content:center;height:100%;color:#9aa3b2;font-weight:700;font-size:13px}
+  .body{padding:14px 16px 16px;display:flex;flex-direction:column;flex:1}
+  .top{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+  .st{font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:#eaf1fe;color:var(--primary)}
+  .st.plan{background:#f1f1f4;color:#777}
+  .code{font-size:11px;font-weight:700;color:var(--mut);font-family:ui-monospace,Menlo,monospace}
+  .card h3{margin:0 0 6px;font-size:16px}
+  .card .desc{margin:0 0 12px;font-size:13px;color:#374151;flex:1}
+  .open{text-align:center;text-decoration:none;font-weight:700;font-size:14px;padding:9px 14px;border-radius:10px;background:var(--primary);color:#fff}
+  .open:hover{background:var(--primary-strong)}
+  .foot{max-width:1180px;margin:28px auto 50px;padding:0 28px;text-align:center;color:var(--mut);font-size:12px}
+</style>
+</head>
+<body>
+  <div class="head">
+    <p class="eyebrow">화면설계서 보드 · Screen Design Board · Mode B 기획 초안</p>
+    <h1>검증 교육 콘텐츠 API <span class="badge">✓ 검증 인프라</span></h1>
+    <p>AI 시대 "검증된 교육 콘텐츠"를 API/라이선스로 공급하는 B2B 인프라. 파트너 저니: <b>신뢰 미끼 → 탐색 → 키·라이선스</b>. 카드를 누르면 좌측 화면 + 번호 콜아웃, 우측 요소별 기능명세가 나란히 열립니다.</p>
+  </div>
+
+  <div class="group"><h2>핵심 저니</h2><span>작성됨 · 신뢰 레이어가 드러나는 두 화면</span></div>
+  <main class="grid">
+    <article class="card">
+      <a class="thumb" href="./sb-01-benchmark.html"><iframe src="./sb-01-benchmark.html" loading="lazy" title="sb-01" tabindex="-1"></iframe></a>
+      <div class="body">
+        <div class="top"><span class="st">기획</span><span class="code">sb-01</span></div>
+        <h3>신뢰 랜딩 · 벤치마크</h3>
+        <p class="desc">"AI 환각 vs 검증 콘텐츠" 무료 미끼 + 샘플셋/API 키 전환.</p>
+        <a class="open" href="./sb-01-benchmark.html">스토리보드 열기 →</a>
+      </div>
+    </article>
+    <article class="card">
+      <a class="thumb" href="./sb-02-catalog.html"><iframe src="./sb-02-catalog.html" loading="lazy" title="sb-02" tabindex="-1"></iframe></a>
+      <div class="body">
+        <div class="top"><span class="st">기획</span><span class="code">sb-02</span></div>
+        <h3>콘텐츠 카탈로그 · API 탐색</h3>
+        <p class="desc">교육과정 필터 + 검증 문항 + 엔드포인트 미리보기.</p>
+        <a class="open" href="./sb-02-catalog.html">스토리보드 열기 →</a>
+      </div>
+    </article>
+  </main>
+
+  <div class="group"><h2>다음 화면</h2><span>계획 · 초안 범위 외 (요청 시 작성)</span></div>
+  <main class="grid">
+    <article class="card">
+      <div class="thumb"><div class="ph">sb-03 · 와이어프레임 예정</div></div>
+      <div class="body"><div class="top"><span class="st plan">계획</span><span class="code">sb-03</span></div>
+        <h3>API 키 · 사용량 · 라이선스</h3>
+        <p class="desc">키 발급/회전, 사용량 차트, 사용량 요금 + 연 라이선스(수익화 표면).</p></div>
+    </article>
+    <article class="card">
+      <div class="thumb"><div class="ph">계획</div></div>
+      <div class="body"><div class="top"><span class="st plan">계획</span><span class="code">sb-04</span></div>
+        <h3>가입 / 로그인</h3>
+        <p class="desc">파트너 계정 생성, 조직·과금 주체 연결.</p></div>
+    </article>
+    <article class="card">
+      <div class="thumb"><div class="ph">계획</div></div>
+      <div class="body"><div class="top"><span class="st plan">계획</span><span class="code">sb-05</span></div>
+        <h3>API 문서</h3>
+        <p class="desc">엔드포인트 레퍼런스·인증·레이트리밋·에러 코드.</p></div>
+    </article>
+    <article class="card">
+      <div class="thumb"><div class="ph">계획</div></div>
+      <div class="body"><div class="top"><span class="st plan">계획</span><span class="code">sb-06</span></div>
+        <h3>라이선스 계약 / 파트너 온보딩</h3>
+        <p class="desc">연 라이선스 견적·계약·검증 범위 합의.</p></div>
+    </article>
+  </main>
+
+  <p class="foot">검증 교육 콘텐츠 API 화면설계서 보드 · 기준 아이디어 초안 2026-06-09 · superpm STORYBOARD (Mode B)</p>
+</body>
+</html>

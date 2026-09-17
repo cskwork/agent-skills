@@ -1,0 +1,18 @@
+{
+  "Name": "Agent Cockpit Control",
+  "UUID": "com.agentcockpit.streamdeck.control",
+  "Icon": "imgs/actions/control",
+  "Tooltip": "Bind a Stream Deck key to one local Agent Cockpit control",
+  "PropertyInspectorPath": "ui/property-inspector.html",
+  "UserTitleEnabled": false,
+  "DisableCaching": true,
+  "Controllers": ["Keypad"],
+  "States": [
+    {
+      "Image": "imgs/actions/control",
+      "TitleAlignment": "middle",
+      "FontSize": 12,
+      "ShowTitle": false
+    }
+  ]
+}

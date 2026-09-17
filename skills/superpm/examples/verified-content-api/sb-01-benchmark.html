@@ -1,0 +1,169 @@
+<!doctype html>
+<!-- sb-01 신뢰 랜딩 · "AI 환각 vs 검증 콘텐츠" 벤치마크 (무료 미끼) · Mode B 기획 -->
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>sb-01 신뢰 랜딩 · 검증 교육 콘텐츠 API 화면설계서</title>
+<link rel="stylesheet" href="./storyboard.css" />
+</head>
+<body class="sb-body">
+  <nav class="sb-nav">
+    <a class="sb-back" href="./index.html">← 보드로</a>
+    <span class="sb-nav-code">sb-01</span>
+    <span class="sb-nav-title">신뢰 랜딩 · 벤치마크</span>
+    <span class="sb-right">
+      <div class="sb-ctl">
+        <div class="sb-fontctl" role="group" aria-label="글자 크기">
+          <button class="sm" data-fz="dec" title="글자 작게">가</button>
+          <button data-fz="reset" title="기본">가</button>
+          <button class="lg" data-fz="inc" title="글자 크게">가</button>
+        </div>
+        <label class="sb-opctl" title="콜아웃 번호 진하기 — 화면 가림 조절">
+          <span class="ico">①</span><span class="lab">번호 진하기</span>
+          <input type="range" min="20" max="100" step="5" data-op aria-label="콜아웃 번호 진하기" />
+        </label>
+      </div>
+      <span class="sb-pager"><span class="pg">‹ 이전</span><a href="./sb-02-catalog.html">다음 ›</a></span>
+    </span>
+  </nav>
+
+  <div class="sb-layout">
+    <aside class="sb-toc" aria-label="화면 목차">
+      <div class="cap">화면 목차</div>
+      <div class="g">핵심 저니</div>
+      <a class="t current" href="./sb-01-benchmark.html"><span class="c">sb-01</span><span class="n">신뢰 랜딩 · 벤치마크</span></a>
+      <a class="t" href="./sb-02-catalog.html"><span class="c">sb-02</span><span class="n">콘텐츠 카탈로그 · API 탐색</span></a>
+      <div class="g">다음 화면</div>
+      <span class="t plan"><span class="c">sb-03</span><span class="n">API 키 · 사용량 · 라이선스</span></span>
+      <span class="t plan"><span class="c">sb-04</span><span class="n">가입 / 로그인</span></span>
+      <span class="t plan"><span class="c">sb-05</span><span class="n">API 문서</span></span>
+      <span class="t plan"><span class="c">sb-06</span><span class="n">라이선스 계약 / 온보딩</span></span>
+    </aside>
+    <main class="sb-main">
+    <header class="sb-head">
+      <p class="sb-eyebrow">스토리보드 화면설계서 · ST-01</p>
+      <h1>신뢰 랜딩 · "AI 환각 vs 검증 콘텐츠" 벤치마크</h1>
+      <p>파트너가 처음 닿는 무료 미끼 화면. 차별화(복제 불가한 검증 신뢰)를 한 화면에서 증명하고 샘플셋·API 키로 전환시킨다.</p>
+      <dl class="sb-meta">
+        <div><dt>화면 ID</dt><dd>sb-01</dd></div>
+        <div><dt>모드</dt><dd>B (기획)</dd></div>
+        <div><dt>상태</dt><dd>신규</dd></div>
+        <div><dt>선행</dt><dd>외부 진입(검색·파트너 아웃리치)</dd></div>
+        <div><dt>후행</dt><dd>sb-02 카탈로그 / 가입</dd></div>
+      </dl>
+    </header>
+
+    <div class="sb-split">
+      <section class="sb-pane sb-screen-sticky">
+        <div class="sb-cap">화면 <span class="sb-cap-en">/ Screen</span>
+          <span class="sb-zoomctl">
+            <button data-z="out" title="축소">−</button><span class="zlvl">100%</span>
+            <button data-z="in" title="확대">+</button><button class="wide" data-z="fit" title="원래대로">맞춤</button>
+            <a href="#" data-lb-stage title="원본 보기 (전체화면 팝업)">원본 보기</a>
+          </span>
+        </div>
+        <div class="sb-screen">
+          <div class="sb-zoom" title="휠/버튼 확대 · 드래그 이동 · 더블클릭 원래대로">
+            <div class="sb-stage">
+          <div class="wf">
+            <div class="wf-nav">검증 콘텐츠 API <span class="r">로그인 · 무료 API 키</span></div>
+
+            <div class="wf-hero sb-mark"><span class="sb-cue">1</span>AI가 만든 그럴듯한 오답을,<br>전문가가 검증한 정답으로.</div>
+            <div class="wf-sub">교육과정 정렬·정답 보증된 문항·해설·정답 데이터를 API/라이선스로.</div>
+
+            <div class="wf-card sb-mark"><span class="sb-cue">2</span>
+              <p class="h">벤치마크 · 검증 콘텐츠 vs 일반 LLM</p>
+              <table class="wf-table">
+                <thead><tr><th>지표</th><th>검증 콘텐츠</th><th>일반 LLM</th></tr></thead>
+                <tbody>
+                  <tr><td>교육과정 정렬 정확도</td><td class="win">99%*</td><td class="lose">61%*</td></tr>
+                  <tr><td>정답 보증율</td><td class="win">100%*</td><td class="lose">73%*</td></tr>
+                  <tr><td>출처 추적 가능</td><td class="win">예</td><td class="lose">아니오</td></tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="wf-row">
+              <div class="wf-btn trust sb-mark"><span class="sb-cue">3</span>샘플 데이터셋 받기</div>
+              <div class="wf-btn primary sb-mark"><span class="sb-cue r">4</span>무료 API 키</div>
+            </div>
+
+            <div class="sb-mark" style="text-align:center"><span class="sb-cue">5</span>
+              <span class="wf-badge">✓ 검증 콘텐츠</span>
+              <span class="wf-sub"> 권리 확인된 원천 콘텐츠 · 교육과정 100% 검수</span>
+            </div>
+          </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sb-pane">
+        <div class="sb-cap">화면 설명 <span class="sb-cap-en">/ Description · 기능명세</span></div>
+        <table class="sb-notes">
+          <thead><tr><th class="c-no">No</th><th class="c-area">구역</th><th class="c-el">요소 / ID</th><th>설명 · 동작 · 데이터 · 예외</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="c-no"><span class="sb-num">1</span></td><td>히어로</td>
+              <td><span class="sb-el">핵심 카피</span><span class="sb-id">.hero</span></td>
+              <td><p>"AI 오답 vs 검증 콘텐츠 정답"의 가치 제안. 차별화를 한 문장으로.</p>
+                <span class="data"><span class="tag dt">데이터</span> 파트너 세그먼트별 카피 변형(AI튜터/EdTech/LLM) — 정적</span>
+                <span class="data"><span class="tag st">상태</span> A/B 카피 슬롯(가정: 실험으로 확정)</span></td>
+            </tr>
+            <tr>
+              <td class="c-no"><span class="sb-num">2</span></td><td>본문</td>
+              <td><span class="sb-el">벤치마크 표</span><span class="sb-id">#benchmark</span></td>
+              <td><p>검증 콘텐츠 vs 일반 LLM 정확도 비교. 신뢰 레이어를 수치로 증명.</p>
+                <span class="data"><span class="tag ev">이벤트</span> 지표 행 hover → 출처/표본 툴팁</span>
+                <span class="data"><span class="tag dt">데이터</span> GET /v1/benchmark {정렬정확도, 정답보증율, 출처추적}; 출처=내부 평가셋 N문항 <b>(가정: 수치는 실측 전 placeholder, *표기)</b></span>
+                <span class="data"><span class="tag ex">예외</span> 로드 실패 시 캐시된 최신 스냅샷 + "기준일" 표기</span></td>
+            </tr>
+            <tr>
+              <td class="c-no"><span class="sb-num">3</span></td><td>CTA</td>
+              <td><span class="sb-el">샘플셋 다운로드</span><span class="sb-id">#cta-sample</span></td>
+              <td><p>교육과정 정렬 샘플 100문항 제공(미끼).</p>
+                <span class="data"><span class="tag ev">이벤트</span> click → 이메일 게이트 모달 → ZIP/CSV 다운로드 + 리드 적재</span>
+                <span class="data"><span class="tag dt">데이터</span> sample_set(curriculum-aligned, 100 items, 라이선스 고지 포함)</span>
+                <span class="data"><span class="tag ex">예외</span> 이메일 미입력/형식오류 → 차단·인라인 오류 / 중복 리드 → 기존 처리</span>
+                <span class="data"><span class="tag st">상태</span> 다운로드 준비 중 스피너</span></td>
+            </tr>
+            <tr>
+              <td class="c-no"><span class="sb-num">4</span></td><td>CTA</td>
+              <td><span class="sb-el">무료 API 키</span><span class="sb-id">#cta-key</span></td>
+              <td><p>핵심 전환. 콘솔로 보내 키를 발급.</p>
+                <span class="data"><span class="tag ev">이벤트</span> click → 미로그인:가입 플로우 / 로그인:sb-03 대시보드</span>
+                <span class="data"><span class="tag ex">예외</span> 가입 미완료 이탈 시 리드만 보존</span>
+                <span class="data"><span class="tag st">상태</span> 로그인 시 라벨 "콘솔로"</span></td>
+            </tr>
+            <tr>
+              <td class="c-no"><span class="sb-num">5</span></td><td>신뢰</td>
+              <td><span class="sb-el">검증 배지·출처</span><span class="sb-id">.trust</span></td>
+              <td><p>복제 불가 근거(저작권 원천·검수)를 명시해 신뢰 레이어를 못박는다.</p>
+                <span class="data"><span class="tag dt">데이터</span> 저작권/검수 메타(정적) — 정확도 주장 시 출처 링크 필수</span>
+                <span class="data"><span class="tag ex">예외</span> 미검증 주장 표기 금지(법무·과장광고 리스크)</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <div class="sb-foot-note"><strong>관련 상세 명세:</strong> 벤치마크 산출 방법론, 샘플셋 라이선스 고지문, 리드 적재 정책(다음 단계)</div>
+    <p class="sb-foot">스토리보드 화면설계서 ST-01 · 신뢰 랜딩 (기준 아이디어 초안 2026-06-09) · * 수치는 실측 전 placeholder</p>
+    </main>
+  </div>
+
+  <div class="sb-lb" id="sbLb" hidden>
+    <div class="sb-lb-bar">
+      <span class="t" id="sbLbTitle">원본 보기</span>
+      <span class="sb-zoomctl">
+        <button data-z="out" aria-label="축소">−</button><span class="zlvl">100%</span>
+        <button data-z="in" aria-label="확대">+</button><button class="wide" data-z="fit">맞춤</button>
+      </span>
+      <button class="sb-lb-x" data-lbclose aria-label="닫기">✕</button>
+    </div>
+    <div class="sb-lb-zoom" id="sbLbZoom"><div class="sb-stage" id="sbLbStage"></div></div>
+  </div>
+  <script src="./storyboard.js"></script>
+</body>
+</html>

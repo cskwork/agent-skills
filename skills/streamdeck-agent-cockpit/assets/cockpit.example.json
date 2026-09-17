@@ -1,0 +1,273 @@
+{
+  "$schema": "./cockpit.schema.json",
+  "version": 3,
+  "server": {
+    "host": "127.0.0.1",
+    "port": 39393,
+    "tokenFile": "~/.agent-cockpit/token",
+    "stateFile": "~/.agent-cockpit/state.json",
+    "commandTimeoutSeconds": 12
+  },
+  "sessions": {
+    "session.claude.main": {
+      "label": "Claude",
+      "agent": "claude",
+      "adapter": {
+        "type": "tmux",
+        "target": "ac-claude-main"
+      },
+      "commands": {
+        "launch": {
+          "argv": [
+            "tmux",
+            "new-session",
+            "-d",
+            "-s",
+            "ac-claude-main",
+            "claude"
+          ],
+          "cwd": "~"
+        },
+        "focus": {
+          "argv": [
+            "python3",
+            "~/.agent-cockpit/bin/focus_tmux.py",
+            "--session",
+            "ac-claude-main"
+          ]
+        },
+        "interrupt": {
+          "argv": [
+            "tmux",
+            "send-keys",
+            "-t",
+            "ac-claude-main",
+            "C-c"
+          ]
+        }
+      },
+      "progress": {
+        "source": "reporter",
+        "staleAfterSeconds": 180
+      }
+    },
+    "session.codex.main": {
+      "label": "Codex",
+      "agent": "codex",
+      "adapter": {
+        "type": "tmux",
+        "target": "ac-codex-main"
+      },
+      "commands": {
+        "launch": {
+          "argv": [
+            "tmux",
+            "new-session",
+            "-d",
+            "-s",
+            "ac-codex-main",
+            "codex"
+          ],
+          "cwd": "~"
+        },
+        "focus": {
+          "argv": [
+            "python3",
+            "~/.agent-cockpit/bin/focus_tmux.py",
+            "--session",
+            "ac-codex-main"
+          ]
+        },
+        "interrupt": {
+          "argv": [
+            "tmux",
+            "send-keys",
+            "-t",
+            "ac-codex-main",
+            "C-c"
+          ]
+        }
+      },
+      "progress": {
+        "source": "reporter",
+        "staleAfterSeconds": 180
+      }
+    },
+    "session.pi.main": {
+      "label": "Pi",
+      "agent": "pi",
+      "adapter": {
+        "type": "tmux",
+        "target": "ac-pi-main"
+      },
+      "commands": {
+        "launch": {
+          "argv": [
+            "tmux",
+            "new-session",
+            "-d",
+            "-s",
+            "ac-pi-main",
+            "pi"
+          ],
+          "cwd": "~"
+        },
+        "focus": {
+          "argv": [
+            "python3",
+            "~/.agent-cockpit/bin/focus_tmux.py",
+            "--session",
+            "ac-pi-main"
+          ]
+        },
+        "interrupt": {
+          "argv": [
+            "tmux",
+            "send-keys",
+            "-t",
+            "ac-pi-main",
+            "C-c"
+          ]
+        }
+      },
+      "progress": {
+        "source": "reporter",
+        "staleAfterSeconds": 180
+      }
+    },
+    "session.jcode.main": {
+      "label": "JCode",
+      "agent": "jcode",
+      "adapter": {
+        "type": "tmux",
+        "target": "ac-jcode-main"
+      },
+      "commands": {
+        "launch": {
+          "argv": [
+            "tmux",
+            "new-session",
+            "-d",
+            "-s",
+            "ac-jcode-main",
+            "jcode"
+          ],
+          "cwd": "~"
+        },
+        "focus": {
+          "argv": [
+            "python3",
+            "~/.agent-cockpit/bin/focus_tmux.py",
+            "--session",
+            "ac-jcode-main"
+          ]
+        },
+        "interrupt": {
+          "argv": [
+            "tmux",
+            "send-keys",
+            "-t",
+            "ac-jcode-main",
+            "C-c"
+          ]
+        }
+      },
+      "progress": {
+        "source": "reporter",
+        "staleAfterSeconds": 180
+      }
+    }
+  },
+  "commands": {},
+  "controls": {
+    "session.claude.main": {
+      "kind": "session",
+      "session": "session.claude.main",
+      "title": "Claude",
+      "gestures": {
+        "tap": {
+          "operation": "focus_or_launch"
+        },
+        "longPress": {
+          "operation": "interrupt",
+          "confirmation": "hold"
+        }
+      }
+    },
+    "session.codex.main": {
+      "kind": "session",
+      "session": "session.codex.main",
+      "title": "Codex",
+      "gestures": {
+        "tap": {
+          "operation": "focus_or_launch"
+        },
+        "longPress": {
+          "operation": "interrupt",
+          "confirmation": "hold"
+        }
+      }
+    },
+    "session.pi.main": {
+      "kind": "session",
+      "session": "session.pi.main",
+      "title": "Pi",
+      "gestures": {
+        "tap": {
+          "operation": "focus_or_launch"
+        },
+        "longPress": {
+          "operation": "interrupt",
+          "confirmation": "hold"
+        }
+      }
+    },
+    "session.jcode.main": {
+      "kind": "session",
+      "session": "session.jcode.main",
+      "title": "JCode",
+      "gestures": {
+        "tap": {
+          "operation": "focus_or_launch"
+        },
+        "longPress": {
+          "operation": "interrupt",
+          "confirmation": "hold"
+        }
+      }
+    }
+  },
+  "appearance": {
+    "showSource": true,
+    "showAge": true,
+    "states": {
+      "idle": {
+        "titleSuffix": "IDLE"
+      },
+      "running": {
+        "titleSuffix": "RUN"
+      },
+      "needs_attention": {
+        "titleSuffix": "CHECK"
+      },
+      "blocked": {
+        "titleSuffix": "BLOCKED"
+      },
+      "succeeded": {
+        "titleSuffix": "DONE"
+      },
+      "failed": {
+        "titleSuffix": "FAILED"
+      },
+      "present": {
+        "titleSuffix": "PRESENT"
+      },
+      "offline": {
+        "titleSuffix": "OFF"
+      },
+      "unavailable": {
+        "titleSuffix": "NO LINK"
+      }
+    }
+  }
+}

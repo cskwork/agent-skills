@@ -1,0 +1,9 @@
+# Skills from this repo installed by default (one name per line, # = comment)
+diagnose
+gh-release
+refine-skill-terse
+skill-cleanup
+skill-usage-stats
+sync-skill
+unslop
+verification-planning

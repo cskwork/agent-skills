@@ -1,0 +1,178 @@
+<!doctype html>
+<!-- sb-02 콘텐츠 카탈로그 · API 탐색 · Mode B 기획 -->
+<html lang="ko">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>sb-02 콘텐츠 카탈로그 · 검증 교육 콘텐츠 API 화면설계서</title>
+<link rel="stylesheet" href="./storyboard.css" />
+</head>
+<body class="sb-body">
+  <nav class="sb-nav">
+    <a class="sb-back" href="./index.html">← 보드로</a>
+    <span class="sb-nav-code">sb-02</span>
+    <span class="sb-nav-title">콘텐츠 카탈로그 · API 탐색</span>
+    <span class="sb-right">
+      <div class="sb-ctl">
+        <div class="sb-fontctl" role="group" aria-label="글자 크기">
+          <button class="sm" data-fz="dec" title="글자 작게">가</button>
+          <button data-fz="reset" title="기본">가</button>
+          <button class="lg" data-fz="inc" title="글자 크게">가</button>
+        </div>
+        <label class="sb-opctl" title="콜아웃 번호 진하기 — 화면 가림 조절">
+          <span class="ico">①</span><span class="lab">번호 진하기</span>
+          <input type="range" min="20" max="100" step="5" data-op aria-label="콜아웃 번호 진하기" />
+        </label>
+      </div>
+      <span class="sb-pager"><a href="./sb-01-benchmark.html">‹ 이전</a><span class="pg">다음 ›</span></span>
+    </span>
+  </nav>
+
+  <div class="sb-layout">
+    <aside class="sb-toc" aria-label="화면 목차">
+      <div class="cap">화면 목차</div>
+      <div class="g">핵심 저니</div>
+      <a class="t" href="./sb-01-benchmark.html"><span class="c">sb-01</span><span class="n">신뢰 랜딩 · 벤치마크</span></a>
+      <a class="t current" href="./sb-02-catalog.html"><span class="c">sb-02</span><span class="n">콘텐츠 카탈로그 · API 탐색</span></a>
+      <div class="g">다음 화면</div>
+      <span class="t plan"><span class="c">sb-03</span><span class="n">API 키 · 사용량 · 라이선스</span></span>
+      <span class="t plan"><span class="c">sb-04</span><span class="n">가입 / 로그인</span></span>
+      <span class="t plan"><span class="c">sb-05</span><span class="n">API 문서</span></span>
+      <span class="t plan"><span class="c">sb-06</span><span class="n">라이선스 계약 / 온보딩</span></span>
+    </aside>
+    <main class="sb-main">
+    <header class="sb-head">
+      <p class="sb-eyebrow">스토리보드 화면설계서 · ST-02</p>
+      <h1>콘텐츠 카탈로그 · API 탐색</h1>
+      <p>교육과정 정렬 필터로 검증된 문항·해설·정답을 탐색하고, 그 필터 상태를 그대로 API 호출 코드로 보여 통합을 유도한다.</p>
+      <dl class="sb-meta">
+        <div><dt>화면 ID</dt><dd>sb-02</dd></div>
+        <div><dt>모드</dt><dd>B (기획)</dd></div>
+        <div><dt>상태</dt><dd>신규</dd></div>
+        <div><dt>선행</dt><dd>sb-01 랜딩</dd></div>
+        <div><dt>후행</dt><dd>sb-03 키·대시보드</dd></div>
+      </dl>
+    </header>
+
+    <div class="sb-split">
+      <section class="sb-pane sb-screen-sticky">
+        <div class="sb-cap">화면 <span class="sb-cap-en">/ Screen</span>
+          <span class="sb-zoomctl">
+            <button data-z="out" title="축소">−</button><span class="zlvl">100%</span>
+            <button data-z="in" title="확대">+</button><button class="wide" data-z="fit" title="원래대로">맞춤</button>
+            <a href="#" data-lb-stage title="원본 보기 (전체화면 팝업)">원본 보기</a>
+          </span>
+        </div>
+        <div class="sb-screen">
+          <div class="sb-zoom" title="휠/버튼 확대 · 드래그 이동 · 더블클릭 원래대로">
+            <div class="sb-stage">
+          <div class="wf">
+            <div class="wf-nav">검증 콘텐츠 API <span class="r">카탈로그 · 콘솔</span></div>
+            <div class="wf-side">
+              <div class="wf-filter sb-mark"><span class="sb-cue">1</span>
+                <div class="g">학년</div><div class="opt">□ 초3 ☑ 초4 □ 초5</div>
+                <div class="g">과목</div><div class="opt">☑ 수학 □ 국어</div>
+                <div class="g">단원</div><div class="opt">☑ 분수</div>
+                <div class="g">성취기준</div><div class="opt">[4수01-10]</div>
+              </div>
+              <div style="flex:1;display:flex;flex-direction:column;gap:11px">
+                <div class="wf-input sb-mark"><span class="sb-cue">2</span>문항·해설 검색…</div>
+
+                <div class="wf-card sb-mark"><span class="sb-cue">3</span>
+                  <div class="sb-mark" style="display:inline-block"><span class="sb-cue r">4</span><span class="wf-badge">✓ 검증 콘텐츠</span></div>
+                  <p class="h" style="margin-top:8px">Q. 3/4 + 1/4 의 값은?</p>
+                  <span class="wf-chip">정답 보기</span><span class="wf-chip">해설 보기</span>
+                  <div class="wf-sub">출처: 검증 콘텐츠 예시 · [4수01-10] · 검수 2026-05</div>
+                </div>
+
+                <div class="wf-key sb-mark"><span class="sb-cue">5</span>GET /v1/items?grade=4&subject=math&unit=fraction&standard=4수01-10  📋</div>
+
+                <div class="wf-row sb-mark"><span class="sb-cue">6</span>
+                  <span class="wf-sub">1,284건 · 이번 달 호출 320 / 1,000</span>
+                  <span class="wf-chip" style="margin-left:auto">다음 →</span>
+                </div>
+              </div>
+            </div>
+          </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="sb-pane">
+        <div class="sb-cap">화면 설명 <span class="sb-cap-en">/ Description · 기능명세</span></div>
+        <table class="sb-notes">
+          <thead><tr><th class="c-no">No</th><th class="c-area">구역</th><th class="c-el">요소 / ID</th><th>설명 · 동작 · 데이터 · 예외</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="c-no"><span class="sb-num">1</span></td><td>필터</td>
+              <td><span class="sb-el">교육과정 필터</span><span class="sb-id">#filters</span></td>
+              <td><p>학년·과목·단원·성취기준으로 결과를 좁힌다. 교육과정 정렬 자산이 곧 차별화.</p>
+                <span class="data"><span class="tag ev">이벤트</span> 선택 변경 → 결과 즉시 필터 + URL 쿼리·API 미리보기 동기화</span>
+                <span class="data"><span class="tag dt">데이터</span> 교육과정 메타 {grade, subject, unit, achievement_standard_code}</span>
+                <span class="data"><span class="tag ex">예외</span> 결과 0건 → 빈 상태 + 인접 성취기준 추천</span></td>
+            </tr>
+            <tr>
+              <td class="c-no"><span class="sb-num">2</span></td><td>검색</td>
+              <td><span class="sb-el">키워드 검색</span><span class="sb-id">#q</span></td>
+              <td><p>문항/해설 본문 검색.</p>
+                <span class="data"><span class="tag ev">이벤트</span> 입력 → 300ms 디바운스 → 검색</span>
+                <span class="data"><span class="tag dt">데이터</span> q: full-text(문항·해설), 필터와 AND 결합</span>
+                <span class="data"><span class="tag ex">예외</span> 빈 검색=전체 / 특수문자 escape</span></td>
+            </tr>
+            <tr>
+              <td class="c-no"><span class="sb-num">3</span></td><td>결과</td>
+              <td><span class="sb-el">문항 카드</span><span class="sb-id">.item-card</span></td>
+              <td><p>검증 문항 1건. 정답·해설은 토글로 노출.</p>
+                <span class="data"><span class="tag ev">이벤트</span> "정답/해설 보기" 토글 → 펼침</span>
+                <span class="data"><span class="tag dt">데이터</span> item {stem, choices, answer, explanation, curriculum_code, source}</span>
+                <span class="data"><span class="tag st">상태</span> 미인증/무료 티어 → 정답·해설 블러 + 키 발급 유도</span>
+                <span class="data"><span class="tag ex">예외</span> 라이선스 범위 외 항목 → 잠금 + 플랜 안내</span></td>
+            </tr>
+            <tr>
+              <td class="c-no"><span class="sb-num">4</span></td><td>신뢰</td>
+              <td><span class="sb-el">검증 콘텐츠 배지</span><span class="sb-id">.badge-verified</span></td>
+              <td><p>항목 단위 신뢰 표식. 검수 메타로 보증.</p>
+                <span class="data"><span class="tag dt">데이터</span> verified=true + {검수자, 검수일, 출처}</span>
+                <span class="data"><span class="tag ex">예외</span> 미검증 항목엔 배지 미표시(검증 자산만 신뢰 레이어)</span></td>
+            </tr>
+            <tr>
+              <td class="c-no"><span class="sb-num">5</span></td><td>API</td>
+              <td><span class="sb-el">엔드포인트 미리보기</span><span class="sb-id">#api-preview</span></td>
+              <td><p>현재 필터를 실제 호출 코드로. "탐색=통합" 전환 다리.</p>
+                <span class="data"><span class="tag ev">이벤트</span> 📋 클릭 → 코드 복사 / 필터 변경 시 자동 갱신</span>
+                <span class="data"><span class="tag dt">데이터</span> GET /v1/items?grade=&subject=&unit=&standard= (cURL/JS 탭)</span>
+                <span class="data"><span class="tag ex">예외</span> 키 없음 → 401 예시 + "무료 키 받기" 링크</span></td>
+            </tr>
+            <tr>
+              <td class="c-no"><span class="sb-num">6</span></td><td>푸터</td>
+              <td><span class="sb-el">건수·쿼터·페이지</span><span class="sb-id">#pager</span></td>
+              <td><p>결과 규모와 잔여 호출 쿼터를 함께 노출.</p>
+                <span class="data"><span class="tag ev">이벤트</span> 다음/이전 또는 무한 스크롤</span>
+                <span class="data"><span class="tag dt">데이터</span> {total, page, remaining_quota}</span>
+                <span class="data"><span class="tag st">상태</span> 쿼터 소진 임박(예: 90%) 경고 배너</span></td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <div class="sb-foot-note"><strong>관련 상세 명세:</strong> /v1/items 응답 스키마, 라이선스 티어별 노출 정책, 검증 메타 데이터 모델(다음 단계)</div>
+    <p class="sb-foot">스토리보드 화면설계서 ST-02 · 콘텐츠 카탈로그 (기준 아이디어 초안 2026-06-09)</p>
+    </main>
+  </div>
+
+  <div class="sb-lb" id="sbLb" hidden>
+    <div class="sb-lb-bar">
+      <span class="t" id="sbLbTitle">원본 보기</span>
+      <span class="sb-zoomctl">
+        <button data-z="out" aria-label="축소">−</button><span class="zlvl">100%</span>
+        <button data-z="in" aria-label="확대">+</button><button class="wide" data-z="fit">맞춤</button>
+      </span>
+      <button class="sb-lb-x" data-lbclose aria-label="닫기">✕</button>
+    </div>
+    <div class="sb-lb-zoom" id="sbLbZoom"><div class="sb-stage" id="sbLbStage"></div></div>
+  </div>
+  <script src="./storyboard.js"></script>
+</body>
+</html>

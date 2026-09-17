@@ -1,0 +1,172 @@
+{
+  "$schema": "./cockpit.schema.json",
+  "version": 3,
+  "server": {
+    "host": "127.0.0.1",
+    "port": 39393,
+    "tokenFile": "~/.agent-cockpit/token",
+    "stateFile": "~/.agent-cockpit/state.json",
+    "commandTimeoutSeconds": 20
+  },
+  "sessions": {
+    "session.claude.slot1": {
+      "label": "Claude 1",
+      "agent": "claude",
+      "adapter": {
+        "type": "command",
+        "probe": {
+          "argv": ["/usr/bin/env", "python3", "~/.agent-cockpit/bin/claim_probe.py", "--slot", "session.claude.slot1"]
+        }
+      },
+      "commands": {
+        "focus": {
+          "argv": ["/usr/bin/env", "python3", "~/.agent-cockpit/bin/focus_terminal.py", "--slot", "session.claude.slot1"]
+        }
+      },
+      "progress": {
+        "source": "reporter",
+        "staleAfterSeconds": 1800
+      }
+    },
+    "session.claude.slot2": {
+      "label": "Claude 2",
+      "agent": "claude",
+      "adapter": {
+        "type": "command",
+        "probe": {
+          "argv": ["/usr/bin/env", "python3", "~/.agent-cockpit/bin/claim_probe.py", "--slot", "session.claude.slot2"]
+        }
+      },
+      "commands": {
+        "focus": {
+          "argv": ["/usr/bin/env", "python3", "~/.agent-cockpit/bin/focus_terminal.py", "--slot", "session.claude.slot2"]
+        }
+      },
+      "progress": {
+        "source": "reporter",
+        "staleAfterSeconds": 1800
+      }
+    },
+    "session.claude.slot3": {
+      "label": "Claude 3",
+      "agent": "claude",
+      "adapter": {
+        "type": "command",
+        "probe": {
+          "argv": ["/usr/bin/env", "python3", "~/.agent-cockpit/bin/claim_probe.py", "--slot", "session.claude.slot3"]
+        }
+      },
+      "commands": {
+        "focus": {
+          "argv": ["/usr/bin/env", "python3", "~/.agent-cockpit/bin/focus_terminal.py", "--slot", "session.claude.slot3"]
+        }
+      },
+      "progress": {
+        "source": "reporter",
+        "staleAfterSeconds": 1800
+      }
+    },
+    "session.claude.slot4": {
+      "label": "Claude 4",
+      "agent": "claude",
+      "adapter": {
+        "type": "command",
+        "probe": {
+          "argv": ["/usr/bin/env", "python3", "~/.agent-cockpit/bin/claim_probe.py", "--slot", "session.claude.slot4"]
+        }
+      },
+      "commands": {
+        "focus": {
+          "argv": ["/usr/bin/env", "python3", "~/.agent-cockpit/bin/focus_terminal.py", "--slot", "session.claude.slot4"]
+        }
+      },
+      "progress": {
+        "source": "reporter",
+        "staleAfterSeconds": 1800
+      }
+    },
+    "session.claude.new": {
+      "label": "New Claude",
+      "agent": "claude",
+      "adapter": {
+        "type": "tmux",
+        "target": "ac-claude-new"
+      },
+      "commands": {
+        "launch": {
+          "argv": ["tmux", "new-session", "-d", "-s", "ac-claude-new", "claude"],
+          "cwd": "~"
+        },
+        "focus": {
+          "argv": ["/usr/bin/env", "python3", "~/.agent-cockpit/bin/focus_tmux.py", "--session", "ac-claude-new"]
+        },
+        "interrupt": {
+          "argv": ["tmux", "send-keys", "-t", "ac-claude-new", "C-c"]
+        }
+      },
+      "progress": {
+        "source": "reporter",
+        "staleAfterSeconds": 1800
+      }
+    }
+  },
+  "commands": {},
+  "controls": {
+    "control.claude.slot1": {
+      "kind": "session",
+      "session": "session.claude.slot1",
+      "title": "Claude 1",
+      "gestures": {
+        "tap": { "operation": "focus" }
+      }
+    },
+    "control.claude.slot2": {
+      "kind": "session",
+      "session": "session.claude.slot2",
+      "title": "Claude 2",
+      "gestures": {
+        "tap": { "operation": "focus" }
+      }
+    },
+    "control.claude.slot3": {
+      "kind": "session",
+      "session": "session.claude.slot3",
+      "title": "Claude 3",
+      "gestures": {
+        "tap": { "operation": "focus" }
+      }
+    },
+    "control.claude.slot4": {
+      "kind": "session",
+      "session": "session.claude.slot4",
+      "title": "Claude 4",
+      "gestures": {
+        "tap": { "operation": "focus" }
+      }
+    },
+    "control.claude.new": {
+      "kind": "session",
+      "session": "session.claude.new",
+      "title": "New Claude",
+      "gestures": {
+        "tap": { "operation": "focus_or_launch" },
+        "longPress": { "operation": "interrupt", "confirmation": "hold" }
+      }
+    }
+  },
+  "appearance": {
+    "showSource": true,
+    "showAge": true,
+    "states": {
+      "idle": { "titleSuffix": "IDLE" },
+      "running": { "titleSuffix": "RUN" },
+      "needs_attention": { "titleSuffix": "CHECK" },
+      "blocked": { "titleSuffix": "BLOCKED" },
+      "succeeded": { "titleSuffix": "DONE" },
+      "failed": { "titleSuffix": "FAILED" },
+      "present": { "titleSuffix": "PRESENT" },
+      "offline": { "titleSuffix": "OFF" },
+      "unavailable": { "titleSuffix": "NO LINK" }
+    }
+  }
+}

@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Agent Cockpit Control</title>
+    <style>
+      body { margin: 12px; font: 13px system-ui, sans-serif; color: #e8e8e8; background: #2d2d2d; }
+      label { display: block; margin: 12px 0 4px; }
+      input { width: 100%; box-sizing: border-box; padding: 7px; color: inherit; background: #1e1e1e; border: 1px solid #5a5a5a; border-radius: 4px; }
+      small { display: block; margin-top: 5px; color: #bdbdbd; line-height: 1.35; }
+    </style>
+  </head>
+  <body>
+    <label for="controlId">Control ID</label>
+    <input id="controlId" autocomplete="off" placeholder="session.codex.main" />
+    <small>Must match a control in cockpit.json. No command text or credentials belong here.</small>
+
+    <label for="daemonUrl">Daemon URL</label>
+    <input id="daemonUrl" autocomplete="off" value="http://127.0.0.1:39393" />
+
+    <label for="tokenFile">Token file</label>
+    <input id="tokenFile" autocomplete="off" value="~/.agent-cockpit/token" />
+    <small>The Node plugin reads this file. The Property Inspector never reads the token itself.</small>
+
+    <label for="holdMs">Hold threshold (ms)</label>
+    <input id="holdMs" type="number" min="350" max="3000" step="50" value="650" />
+
+    <label for="pollMs">Refresh interval (ms)</label>
+    <input id="pollMs" type="number" min="500" max="10000" step="250" value="1500" />
+
+    <script src="property-inspector.js"></script>
+  </body>
+</html>

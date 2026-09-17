@@ -1,0 +1,51 @@
+{
+	"Name": "Agent Cockpit",
+	"Version": "0.1.0.0",
+	"Author": "cskwork",
+	"Actions": [
+		{
+			"Name": "Agent Cockpit Control",
+			"UUID": "com.cskwork.agent-cockpit.control",
+			"Icon": "imgs/actions/control/icon",
+			"Tooltip": "Bind a key to one local Agent Cockpit control.",
+			"PropertyInspectorPath": "ui/property-inspector.html",
+			"UserTitleEnabled": false,
+			"DisableCaching": true,
+			"Controllers": [
+				"Keypad"
+			],
+			"States": [
+				{
+					"Image": "imgs/actions/control/key",
+					"TitleAlignment": "middle",
+					"FontSize": 12,
+					"ShowTitle": false
+				}
+			]
+		}
+	],
+	"Category": "Agent Cockpit",
+	"CategoryIcon": "imgs/plugin/category-icon",
+	"CodePath": "bin/plugin.js",
+	"Description": "Live Claude Code and Codex controls with verified local status.",
+	"Icon": "imgs/plugin/marketplace",
+	"SDKVersion": 3,
+	"Software": {
+		"MinimumVersion": "7.1"
+	},
+	"OS": [
+		{
+			"Platform": "mac",
+			"MinimumVersion": "12"
+		},
+		{
+			"Platform": "windows",
+			"MinimumVersion": "10"
+		}
+	],
+	"Nodejs": {
+		"Version": "24",
+		"Debug": "enabled"
+	},
+	"UUID": "com.cskwork.agent-cockpit"
+}

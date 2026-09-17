@@ -1,0 +1,1405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>/superpm - one PM request, a verified artifact</title>
+<meta name="description" content="/superpm folds 68 PM skills into one: it captures intent from your request, diverges by PM domain into the right framework, produces the smallest useful artifact, and an independent critic checks it against the framework and the real decision before delivery. English and Korean." />
+<meta property="og:title" content="/superpm - one PM request, a verified artifact" />
+<meta property="og:description" content="One skill, ten PM domains. Capture intent, route by domain, draft the smallest useful artifact, verify with an independent critic. English and Korean." />
+<meta property="og:type" content="website" />
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='8' fill='%230b0d18'/%3E%3Cpath d='M14 46 V20 l10 16 10-16 V46' fill='none' stroke='%239d8bff' stroke-width='7' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E" />
+<style>
+  :root {
+    --bg: #0b0d18;
+    --ink: #f1f2fb;
+    --muted: #aab0c8;
+    --soft: #767e9c;
+    --line: rgba(170, 178, 230, .16);
+    --line-strong: rgba(170, 178, 230, .30);
+    --panel: rgba(18, 20, 38, .82);
+    --panel-2: rgba(13, 15, 28, .94);
+    --panel-3: rgba(26, 28, 50, .72);
+    --brand: #9d8bff;
+    --brand-soft: rgba(157, 139, 255, .15);
+    --green: #3fdcb6;
+    --green-soft: rgba(63, 220, 182, .14);
+    --cyan: #6aa6ff;
+    --cyan-soft: rgba(106, 166, 255, .13);
+    --amber: #ffc56b;
+    --amber-soft: rgba(255, 197, 107, .14);
+    --red: #ff7d6b;
+    --red-soft: rgba(255, 125, 107, .13);
+    --violet: #b69cff;
+    --violet-soft: rgba(182, 156, 255, .14);
+    --pink: #ff8fcf;
+    --blue: #6ea8ff;
+    --blue-soft: rgba(110, 168, 255, .13);
+    --mono: "SFMono-Regular", "SF Mono", Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: "Avenir Next", "Apple SD Gothic Neo", "Pretendard", "Noto Sans KR", system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+    --radius: 8px;
+    --fs: 1;
+  }
+
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; background: var(--bg); }
+  body {
+    margin: 0;
+    min-width: 320px;
+    background:
+      radial-gradient(1200px 540px at 80% -10%, rgba(157,139,255,.18), transparent 60%),
+      radial-gradient(900px 480px at 0% 8%, rgba(63,220,182,.07), transparent 55%),
+      linear-gradient(180deg, rgba(11,13,24,.5), var(--bg) 760px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.02) 0 1px, transparent 1px 120px),
+      repeating-linear-gradient(0deg, rgba(255,255,255,.016) 0 1px, transparent 1px 120px),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: calc(16px * var(--fs));
+    line-height: 1.55;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  body::before {
+    content: "";
+    position: fixed;
+    inset: 0;
+    pointer-events: none;
+    z-index: 0;
+    opacity: .12;
+    background-image:
+      linear-gradient(rgba(255,255,255,.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.03) 1px, transparent 1px);
+    background-size: 34px 34px;
+    mask-image: linear-gradient(to bottom, #000, transparent 78%);
+  }
+
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: var(--cyan); }
+  a:focus-visible,
+  button:focus-visible {
+    outline: 2px solid var(--cyan);
+    outline-offset: 3px;
+  }
+
+  code, kbd, pre, .mono { font-family: var(--mono); }
+  b { color: var(--ink); }
+  .wrap {
+    position: relative;
+    z-index: 2;
+    width: min(1180px, calc(100% - 40px));
+    margin: 0 auto;
+  }
+
+  html[lang="en"] .ko { display: none !important; }
+  html[lang="ko"] .en { display: none !important; }
+  html[lang="ko"] .ko { word-break: keep-all; }
+
+  .gatebar {
+    position: sticky;
+    top: 0;
+    z-index: 20;
+    border-bottom: 1px solid var(--line);
+    background: rgba(5, 7, 10, .72);
+    backdrop-filter: blur(16px) saturate(130%);
+    font-family: var(--mono);
+    font-size: 12px;
+  }
+
+  .gatebar .wrap {
+    min-height: 48px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .status-led {
+    width: 9px;
+    height: 9px;
+    border-radius: 99px;
+    background: var(--brand);
+    box-shadow: 0 0 18px rgba(157, 139, 255, .9);
+    flex: 0 0 auto;
+    animation: ledPulse 1.8s ease-in-out infinite;
+  }
+
+  .gatebar .label { color: var(--muted); }
+  .gatebar .pass { color: var(--green); }
+  .gatebar .spacer { margin-left: auto; }
+  .gatebar-controls {
+    display: inline-flex;
+    align-items: center;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    overflow: hidden;
+    background: rgba(255,255,255,.03);
+    flex: 0 0 auto;
+  }
+  .gatebar button {
+    border: 0;
+    border-left: 1px solid var(--line);
+    padding: 7px 10px;
+    color: var(--muted);
+    background: transparent;
+    font: inherit;
+    cursor: pointer;
+    line-height: 1;
+  }
+  .gatebar button:first-child { border-left: 0; }
+  .gatebar button[aria-pressed="true"] {
+    background: var(--brand-soft);
+    color: var(--brand);
+  }
+  .gatebar button:disabled {
+    opacity: .38;
+    cursor: default;
+  }
+
+  .hero {
+    position: relative;
+    min-height: min(820px, calc(100svh - 48px));
+    padding: clamp(54px, 8vw, 92px) 0 58px;
+    display: grid;
+    align-items: center;
+    overflow: visible;
+  }
+
+  .hero-canvas {
+    position: absolute;
+    left: 50%;
+    top: -48px;
+    width: 100vw;
+    height: min(860px, 100svh);
+    transform: translateX(-50%);
+    z-index: 0;
+    opacity: .98;
+  }
+
+  .hero::after {
+    content: "";
+    position: absolute;
+    left: 50%;
+    bottom: -1px;
+    width: 100vw;
+    height: 190px;
+    transform: translateX(-50%);
+    z-index: 1;
+    background: linear-gradient(180deg, transparent, var(--bg) 78%);
+    pointer-events: none;
+  }
+
+  .hero-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1.02fr) minmax(330px, .78fr);
+    gap: clamp(28px, 5vw, 74px);
+    align-items: center;
+  }
+
+  .brandline {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    width: fit-content;
+    max-width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: rgba(11, 13, 24, .6);
+    color: var(--brand);
+    font: 700 12px/1 var(--mono);
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+
+  .brandline::before {
+    content: "";
+    width: 34px;
+    height: 1px;
+    background: linear-gradient(90deg, var(--brand), transparent);
+  }
+
+  h1 {
+    margin: 24px 0 0;
+    max-width: 11ch;
+    font-size: clamp(54px, 11vw, 138px);
+    line-height: .86;
+    letter-spacing: 0;
+    font-weight: 900;
+    text-wrap: balance;
+  }
+  h1 span { color: var(--soft); }
+
+  .hero-sub {
+    max-width: 700px;
+    margin: 26px 0 0;
+    color: var(--ink);
+    font-size: calc(clamp(21px, 3vw, 34px) * var(--fs));
+    line-height: 1.12;
+    font-weight: 780;
+    text-wrap: balance;
+  }
+
+  .hero-copy {
+    max-width: 66ch;
+    margin: 18px 0 0;
+    color: var(--muted);
+    font-size: calc(17px * var(--fs));
+  }
+
+  .cta-row {
+    margin-top: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .btn {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 11px 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: var(--radius);
+    background: rgba(255,255,255,.045);
+    color: var(--ink);
+    font: 760 13px/1 var(--mono);
+    letter-spacing: .01em;
+    transition: transform .18s ease, border-color .18s ease, background .18s ease, color .18s ease;
+  }
+  .btn:hover {
+    transform: translateY(-2px);
+    border-color: rgba(157, 139, 255, .6);
+    background: rgba(157, 139, 255, .09);
+    color: var(--brand);
+  }
+  .btn.primary {
+    color: #14102e;
+    border-color: rgba(157, 139, 255, .9);
+    background: linear-gradient(180deg, #b8a8ff, var(--brand));
+    box-shadow: 0 16px 54px rgba(157, 139, 255, .26);
+  }
+  .btn.primary:hover {
+    color: #14102e;
+    background: linear-gradient(180deg, #cdc1ff, var(--brand));
+  }
+
+  .proof-panel {
+    position: relative;
+    min-height: 430px;
+    perspective: 1200px;
+  }
+
+  .console-card,
+  .signal-card,
+  .stamp-card {
+    position: absolute;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: linear-gradient(180deg, rgba(14, 22, 29, .92), rgba(6, 10, 14, .94));
+    box-shadow: 0 26px 100px rgba(0, 0, 0, .56);
+    backdrop-filter: blur(12px);
+  }
+
+  .console-card {
+    inset: 34px 0 auto auto;
+    width: min(430px, 100%);
+    min-height: 286px;
+    transform: rotateY(-9deg) rotateZ(1deg);
+    overflow: hidden;
+    animation: floatA 6s ease-in-out infinite;
+  }
+  .console-top {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 13px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255,255,255,.035);
+  }
+  .console-top i {
+    width: 10px;
+    height: 10px;
+    border-radius: 99px;
+    background: var(--soft);
+  }
+  .console-top span {
+    margin-left: auto;
+    color: var(--soft);
+    font: 12px var(--mono);
+  }
+  .doc-chip {
+    margin-left: 0;
+    padding: 4px 9px;
+    border: 1px solid var(--brand-soft);
+    border-radius: 999px;
+    color: var(--brand);
+    background: var(--brand-soft);
+    font: 700 11px/1 var(--mono);
+    letter-spacing: .04em;
+  }
+  .console-card pre {
+    margin: 0;
+    padding: 18px;
+    color: #d7e6f2;
+    font: calc(13px * var(--fs))/1.72 var(--mono);
+    white-space: pre-wrap;
+  }
+  .c-green { color: var(--green); }
+  .c-cyan { color: var(--cyan); }
+  .c-amber { color: var(--amber); }
+  .c-red { color: var(--red); }
+  .c-soft { color: var(--soft); }
+
+  .signal-card {
+    left: -8px;
+    bottom: 22px;
+    width: min(280px, 76vw);
+    padding: 17px;
+    transform: rotateZ(-3deg);
+    animation: floatB 7s ease-in-out infinite;
+  }
+  .signal-card h3,
+  .stamp-card h3 {
+    margin: 0 0 10px;
+    font: 760 12px/1 var(--mono);
+    color: var(--muted);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .signal-row {
+    display: grid;
+    grid-template-columns: 66px 1fr auto;
+    gap: 10px;
+    align-items: center;
+    margin-top: 10px;
+    color: var(--muted);
+    font: 12px var(--mono);
+  }
+  .track {
+    height: 8px;
+    border: 1px solid var(--line);
+    border-radius: 99px;
+    overflow: hidden;
+    background: rgba(255,255,255,.04);
+  }
+  .track span {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: var(--green);
+    transform-origin: left;
+    animation: fillTrack 2.8s ease-in-out infinite;
+  }
+  .signal-row:nth-of-type(3) .track span { background: var(--cyan); animation-delay: .28s; }
+  .signal-row:nth-of-type(4) .track span { background: var(--amber); animation-delay: .48s; }
+
+  .stamp-card {
+    right: 18px;
+    top: 0;
+    width: min(226px, 70vw);
+    padding: 15px;
+    transform: rotateZ(4deg);
+    animation: stampPulse 3.5s ease-in-out infinite;
+  }
+  .stamp-card .stamp {
+    display: grid;
+    place-items: center;
+    min-height: 76px;
+    border: 1px dashed rgba(63, 220, 182, .55);
+    color: var(--green);
+    background: var(--green-soft);
+    font: 900 20px/1 var(--mono);
+    letter-spacing: .06em;
+  }
+
+  .ticker {
+    position: relative;
+    z-index: 2;
+    border-top: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+    background: rgba(7, 11, 15, .82);
+  }
+  .ticker-track {
+    display: flex;
+    width: max-content;
+    animation: tickerMove 30s linear infinite;
+  }
+  .ticker span {
+    display: inline-flex;
+    align-items: center;
+    min-height: 46px;
+    padding: 0 26px;
+    color: var(--muted);
+    font: 700 12px/1 var(--mono);
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .ticker b { color: var(--green); }
+
+  section {
+    position: relative;
+    z-index: 2;
+    padding: clamp(62px, 9vw, 108px) 0;
+    border-top: 1px solid var(--line);
+  }
+
+  .section-head {
+    display: grid;
+    grid-template-columns: minmax(0, .75fr) minmax(260px, .55fr);
+    gap: 34px;
+    align-items: end;
+    margin-bottom: 30px;
+  }
+  h2 {
+    margin: 0;
+    font-size: calc(clamp(31px, 6vw, 72px) * var(--fs));
+    line-height: .94;
+    letter-spacing: 0;
+    text-wrap: balance;
+  }
+  .lead {
+    margin: 0;
+    color: var(--muted);
+    font-size: calc(17px * var(--fs));
+  }
+
+  .metric-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+  }
+  .metric {
+    min-height: 134px;
+    padding: 18px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .metric strong {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--brand);
+    font: 900 calc(34px * var(--fs))/1 var(--mono);
+  }
+  .metric span {
+    color: var(--muted);
+    font-size: calc(14px * var(--fs));
+  }
+
+  .split {
+    display: grid;
+    grid-template-columns: minmax(0, .95fr) minmax(300px, .65fr);
+    gap: clamp(20px, 4vw, 42px);
+    align-items: stretch;
+  }
+  .copy-stack {
+    display: grid;
+    gap: 12px;
+  }
+  .claim {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .claim h3,
+  .mode-card h3,
+  .gate-item h3,
+  .proof-item h3 {
+    margin: 0 0 8px;
+    font-size: calc(20px * var(--fs));
+    line-height: 1.2;
+  }
+  .claim p,
+  .mode-card p,
+  .gate-item p,
+  .proof-item p {
+    margin: 0;
+    color: var(--muted);
+    font-size: calc(15px * var(--fs));
+  }
+
+  .route-map {
+    position: relative;
+    min-height: 100%;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background:
+      linear-gradient(180deg, rgba(157,139,255,.08), transparent),
+      var(--panel-2);
+    overflow: hidden;
+  }
+  .route-map::before {
+    content: "";
+    position: absolute;
+    inset: 22px;
+    border: 1px solid rgba(157,139,255,.20);
+    transform: skewY(-8deg);
+    opacity: .68;
+  }
+  .route-step {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin: 0 0 13px;
+    padding: 12px 13px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: rgba(5, 7, 10, .72);
+    color: var(--muted);
+    font: 700 12px/1.25 var(--mono);
+  }
+  .route-step b { color: var(--ink); }
+  .route-step.pass { border-color: rgba(63,220,182,.46); color: var(--green); }
+  .route-step.red { border-color: rgba(255,111,111,.42); color: var(--red); }
+
+  .mode-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .mode-card {
+    position: relative;
+    min-height: 250px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+    overflow: hidden;
+    transition: transform .18s ease, border-color .18s ease;
+  }
+  .mode-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(157,139,255,.55);
+  }
+  .mode-card::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    height: 3px;
+    border-radius: 99px;
+    background: var(--brand);
+    opacity: .72;
+  }
+  .mode-card.strategy::after { background: var(--cyan); }
+  .mode-card.execute::after { background: var(--amber); }
+  .mode-card.storyboard::after { background: var(--blue); }
+  .mode-card.research::after { background: var(--violet); }
+  .mode-card.analytics::after { background: var(--blue); }
+  .mode-card.gtm::after { background: var(--pink); }
+  .mode-card.growth::after { background: var(--red); }
+  .mode-card.toolkit::after { background: var(--green); }
+  .mode-card.aiship::after { background: var(--cyan); }
+  .mode-label {
+    display: block;
+    margin-bottom: 38px;
+    color: var(--soft);
+    font: 800 11px/1 var(--mono);
+    letter-spacing: .09em;
+    text-transform: uppercase;
+  }
+  .mode-pipe {
+    margin-top: 18px;
+    color: var(--soft);
+    font: calc(12px * var(--fs))/1.6 var(--mono);
+  }
+  .mode-pipe b { color: var(--ink); }
+
+  .gate-grid {
+    display: grid;
+    grid-template-columns: repeat(5, minmax(180px, 1fr));
+    gap: 12px;
+    overflow-x: auto;
+    padding-bottom: 8px;
+    scroll-snap-type: x mandatory;
+  }
+  .gate-item {
+    scroll-snap-align: start;
+    min-height: 260px;
+    padding: 19px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .gate-no {
+    display: inline-grid;
+    place-items: center;
+    width: 34px;
+    height: 34px;
+    margin-bottom: 24px;
+    border: 1px solid rgba(157,139,255,.44);
+    color: var(--brand);
+    background: var(--brand-soft);
+    border-radius: 4px;
+    font: 900 13px/1 var(--mono);
+  }
+
+  .vault {
+    display: grid;
+    grid-template-columns: minmax(0, .8fr) minmax(320px, .72fr);
+    gap: 24px;
+  }
+  .file-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  .file-chip {
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .file-chip code {
+    display: block;
+    margin-bottom: 6px;
+    color: var(--cyan);
+    font-size: calc(13px * var(--fs));
+  }
+  .file-chip span {
+    color: var(--muted);
+    font-size: calc(13px * var(--fs));
+  }
+  .vault-ascii {
+    margin: 0;
+    min-height: 100%;
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel-2);
+    color: #dbe7f2;
+    font: calc(13px * var(--fs))/1.6 var(--mono);
+    white-space: pre-wrap;
+  }
+
+  .proof-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+  }
+  .proof-item {
+    min-height: 248px;
+    padding: 20px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .proof-item .tag {
+    display: inline-flex;
+    margin-bottom: 36px;
+    padding: 7px 9px;
+    border-radius: 4px;
+    background: var(--green-soft);
+    color: var(--green);
+    font: 800 11px/1 var(--mono);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .proof-item.research .tag { background: var(--violet-soft); color: var(--violet); }
+  .proof-item.analytics .tag { background: var(--blue-soft); color: var(--blue); }
+
+  .install {
+    display: grid;
+    grid-template-columns: minmax(0, .86fr) minmax(280px, .5fr);
+    gap: 20px;
+    align-items: stretch;
+  }
+  .terminal {
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel-2);
+    overflow: hidden;
+  }
+  .terminal-bar {
+    height: 38px;
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    padding: 0 13px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255,255,255,.035);
+  }
+  .terminal-bar i {
+    width: 10px;
+    height: 10px;
+    border-radius: 99px;
+    background: var(--soft);
+  }
+  .terminal pre {
+    margin: 0;
+    padding: 20px;
+    overflow: auto;
+    color: #d7e6f2;
+    font: calc(13px * var(--fs))/1.75 var(--mono);
+  }
+  .install-card {
+    padding: 22px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--panel);
+  }
+  .install-card h2 {
+    font-size: calc(clamp(28px, 4.6vw, 52px) * var(--fs));
+    line-height: 1;
+    overflow-wrap: anywhere;
+  }
+  .install-card p {
+    margin: 0 0 18px;
+    color: var(--muted);
+  }
+  .pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .pill {
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    padding: 7px 10px;
+    color: var(--muted);
+    background: rgba(255,255,255,.035);
+    font: 700 12px/1 var(--mono);
+  }
+
+  footer {
+    position: relative;
+    z-index: 2;
+    padding: 38px 0 58px;
+    color: var(--soft);
+    border-top: 1px solid var(--line);
+    font-size: calc(14px * var(--fs));
+  }
+  footer .wrap {
+    display: flex;
+    gap: 18px;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+
+  .reveal {
+    opacity: 0;
+    transform: translateY(22px);
+    transition: opacity .65s ease, transform .65s ease;
+  }
+  .reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  @keyframes ledPulse {
+    0%, 100% { transform: scale(1); opacity: .82; }
+    50% { transform: scale(1.32); opacity: 1; }
+  }
+  @keyframes floatA {
+    0%, 100% { transform: rotateY(-9deg) rotateZ(1deg) translate3d(0,0,0); }
+    50% { transform: rotateY(-6deg) rotateZ(.2deg) translate3d(0,-14px,0); }
+  }
+  @keyframes floatB {
+    0%, 100% { transform: rotateZ(-3deg) translate3d(0,0,0); }
+    50% { transform: rotateZ(-1.5deg) translate3d(8px,-12px,0); }
+  }
+  @keyframes stampPulse {
+    0%, 100% { transform: rotateZ(4deg) scale(1); box-shadow: 0 24px 80px rgba(0,0,0,.48); }
+    50% { transform: rotateZ(2deg) scale(1.03); box-shadow: 0 24px 90px rgba(63,220,182,.14); }
+  }
+  @keyframes fillTrack {
+    0%, 100% { transform: scaleX(.68); }
+    50% { transform: scaleX(1); }
+  }
+  @keyframes tickerMove {
+    from { transform: translate3d(0,0,0); }
+    to { transform: translate3d(-50%,0,0); }
+  }
+
+  @media (max-width: 980px) {
+    .hero-grid,
+    .section-head,
+    .split,
+    .vault,
+    .install {
+      grid-template-columns: 1fr;
+    }
+    .proof-panel {
+      min-height: 520px;
+      max-width: 560px;
+    }
+    .metric-grid,
+    .mode-grid,
+    .proof-grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+
+  @media (max-width: 680px) {
+    .wrap { width: min(100% - 28px, 1180px); }
+    .gatebar .label,
+    .gatebar .pass { display: none; }
+    .gatebar .wrap { gap: 8px; min-height: 50px; }
+    .hero { min-height: auto; padding-top: 46px; }
+    .hero-grid { gap: 18px; }
+    .proof-panel { display: none; }
+    .metric-grid,
+    .mode-grid,
+    .proof-grid,
+    .file-list {
+      grid-template-columns: 1fr;
+    }
+    .console-card {
+      right: 0;
+      width: 100%;
+      transform: none;
+    }
+    .signal-card { left: 0; bottom: 16px; }
+    .stamp-card { right: 10px; }
+    .ticker span { padding: 0 18px; }
+    section { padding: 62px 0; }
+    footer .wrap { align-items: flex-start; }
+  }
+
+  @media (max-width: 460px) {
+    .gatebar a { display: none; }
+    .cta-row .btn { width: 100%; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *,
+    *::before,
+    *::after {
+      animation-duration: .001ms !important;
+      animation-iteration-count: 1 !important;
+      scroll-behavior: auto !important;
+      transition-duration: .001ms !important;
+    }
+    .ticker-track { transform: none !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="gatebar" aria-label="Page controls">
+  <div class="wrap">
+    <span class="status-led" aria-hidden="true"></span>
+    <span class="mono">critic - ground-truth</span>
+    <span class="label en">the framework and the real decision are the oracle, never a template</span>
+    <span class="label ko">기준은 프레임워크와 실제 의사결정입니다. 채워 넣는 템플릿이 아닙니다</span>
+    <span class="pass">READY</span>
+    <span class="spacer"></span>
+    <span class="gatebar-controls" role="group" aria-label="Text size">
+      <button type="button" data-fs="dec" aria-label="Decrease text size">A-</button>
+      <button type="button" data-fs="inc" aria-label="Increase text size">A+</button>
+    </span>
+    <span class="gatebar-controls" role="group" aria-label="Language">
+      <button type="button" data-lang="en">EN</button>
+      <button type="button" data-lang="ko">KO</button>
+    </span>
+    <a class="mono" href="https://github.com/cskwork/superpm-skill">GitHub</a>
+  </div>
+</nav>
+
+<header class="hero" id="top">
+  <canvas class="hero-canvas" id="proof-map" aria-hidden="true"></canvas>
+  <div class="wrap hero-grid">
+    <div>
+      <div class="brandline">
+        <span class="en">Single-skill PM operating system</span>
+        <span class="ko">단일 스킬 PM 운영체제</span>
+      </div>
+      <h1><span>/</span>superpm</h1>
+      <p class="hero-sub en">One PM request, a verified artifact.</p>
+      <p class="hero-sub ko">PM 요청 하나, 검증된 산출물 하나.</p>
+      <p class="hero-copy en">Hand `/superpm` one PM ask. It captures intent, diverges by domain into the right framework, drafts the smallest useful artifact, and an independent critic checks it against the framework and the real decision - flagging every unsourced number and dodged call. Then it stops.</p>
+      <p class="hero-copy ko">`/superpm`에 PM 요청 하나를 맡기세요. 의도를 캡처해 도메인으로 분기하고, 알맞은 프레임워크로 가장 작은 유용한 산출물을 만든 뒤, 독립 critic이 프레임워크와 실제 의사결정에 대조합니다. 출처 없는 숫자와 회피한 결정을 모두 적발한 뒤 멈춥니다.</p>
+      <div class="cta-row">
+        <a class="btn primary" href="#install"><span class="en">Install</span><span class="ko">설치</span></a>
+        <a class="btn" href="#workflow"><span class="en">The loop</span><span class="ko">루프</span></a>
+        <a class="btn" href="#domains"><span class="en">Domains</span><span class="ko">도메인</span></a>
+        <a class="btn" href="https://github.com/cskwork/superpm-skill"><span class="en">Source</span><span class="ko">소스</span></a>
+      </div>
+    </div>
+
+    <div class="proof-panel" aria-label="Animated PM loop">
+      <div class="stamp-card">
+        <h3><span class="en">Final state</span><span class="ko">최종 상태</span></h3>
+        <div class="stamp">READY</div>
+      </div>
+      <div class="console-card">
+        <div class="console-top"><span class="doc-chip">PRD &middot; EXECUTE</span><span>in review</span></div>
+<pre class="en"><span class="c-soft">Problem</span>    referral has no loop
+<span class="c-soft">Goal</span>       invite &rarr; activated friend
+<span class="c-soft">Metric</span>     <span class="c-red">missing &mdash; critic blocker</span>
+<span class="c-soft">Non-goals</span>  <span class="c-green">defined</span>
+<span class="c-soft">Decision</span>   <span class="c-green">ready once metric set</span></pre>
+<pre class="ko"><span class="c-soft">문제</span>      추천에 루프가 없음
+<span class="c-soft">목표</span>      초대 &rarr; 활성 친구
+<span class="c-soft">성공지표</span>  <span class="c-red">없음 &mdash; critic blocker</span>
+<span class="c-soft">non-goal</span>  <span class="c-green">정의됨</span>
+<span class="c-soft">의사결정</span>  <span class="c-green">지표 설정 후 준비</span></pre>
+      </div>
+      <div class="signal-card">
+        <h3><span class="en">Decision signals</span><span class="ko">의사결정 신호</span></h3>
+        <div class="signal-row"><span><span class="en">decision</span><span class="ko">의사결정</span></span><div class="track"><span></span></div><b><span class="en">framed</span><span class="ko">고정됨</span></b></div>
+        <div class="signal-row"><span><span class="en">claims</span><span class="ko">주장</span></span><div class="track"><span></span></div><b><span class="en">sourced</span><span class="ko">근거화</span></b></div>
+        <div class="signal-row"><span><span class="en">critic</span><span class="ko">critic</span></span><div class="track"><span></span></div><b><span class="en">risks up</span><span class="ko">risk 표면화</span></b></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div class="ticker" aria-hidden="true">
+  <div class="ticker-track">
+    <span><b>smallest useful artifact</b></span>
+    <span>serve the real decision</span>
+    <span>ground every claim in evidence</span>
+    <span>surface hidden assumptions</span>
+    <span>an independent critic before delivery</span>
+    <span>one skill, ten PM domains</span>
+    <span><b>smallest useful artifact</b></span>
+    <span>serve the real decision</span>
+    <span>ground every claim in evidence</span>
+    <span>surface hidden assumptions</span>
+    <span>an independent critic before delivery</span>
+    <span>one skill, ten PM domains</span>
+  </div>
+</div>
+
+<main>
+  <section id="why">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2><span class="en">The whole PM toolbox, folded into one skill.</span><span class="ko">PM 도구 전체를, 하나의 스킬로.</span></h2>
+        <p class="lead en">68 PM skills across 9 plugins, merged. You don't pick a skill - you state the ask, and the workflow routes it.</p>
+        <p class="lead ko">9개 플러그인에 흩어진 68개 PM 스킬을 병합했습니다. 스킬을 고르지 않습니다 - 요청만 말하면 워크플로가 라우팅합니다.</p>
+      </div>
+      <div class="metric-grid">
+        <div class="metric reveal"><strong>10</strong><span class="en">PM domains; the request picks the route.</span><span class="ko">개 PM 도메인. 요청이 라우트를 고릅니다.</span></div>
+        <div class="metric reveal"><strong>68</strong><span class="en">frameworks compressed into one self-contained skill.</span><span class="ko">개 프레임워크를 자기완결 단일 스킬로 압축.</span></div>
+        <div class="metric reveal"><strong>1</strong><span class="en">independent critic red-teams every artifact before delivery.</span><span class="ko">독립 critic이 전달 전 모든 산출물을 red-team.</span></div>
+        <div class="metric reveal"><strong>&le;5</strong><span class="en">questions, asked only when the request is genuinely ambiguous.</span><span class="ko">요청이 진짜 모호할 때만, 최대 5개 질문.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="workflow">
+    <div class="wrap split">
+      <div class="copy-stack">
+        <div class="claim reveal">
+          <h3><span class="en">It captures intent and routes by domain.</span><span class="ko">의도를 캡처해 도메인으로 라우팅합니다.</span></h3>
+          <p class="en">The request decides the domain and the target artifact. Anything answerable from your docs or data is read, not asked; only load-bearing forks reach a &le;5 question interview.</p>
+          <p class="ko">요청이 도메인과 목표 산출물을 정합니다. 문서나 데이터로 답할 수 있는 건 묻지 않고 읽습니다. 핵심 갈림길만 최대 5개 질문 인터뷰로 갑니다.</p>
+        </div>
+        <div class="claim reveal">
+          <h3><span class="en">It drafts the smallest useful artifact.</span><span class="ko">가장 작은 유용한 산출물을 만듭니다.</span></h3>
+          <p class="en">Only the frameworks the decision needs - no SWOT, persona, and roadmap bolted onto a single pricing call. Real inputs in; gaps marked as explicit assumptions.</p>
+          <p class="ko">의사결정에 필요한 프레임워크만 씁니다. 가격 결정 하나에 SWOT·페르소나·로드맵을 덧붙이지 않습니다. 실제 입력값을 쓰고, 빈틈은 가정으로 명시합니다.</p>
+        </div>
+        <div class="claim reveal">
+          <h3><span class="en">An independent critic checks it.</span><span class="ko">독립 critic이 점검합니다.</span></h3>
+          <p class="en">A fresh reader red-teams the draft against three grounds - framework completeness, the real decision, and the evidence behind every claim - and names each gap as a risk.</p>
+          <p class="ko">새로운 리더가 초안을 세 기준 - 프레임워크 완결성, 실제 의사결정, 모든 주장의 근거 - 에 대조해 red-team하고, 각 빈틈을 risk로 적발합니다.</p>
+        </div>
+      </div>
+      <div class="route-map reveal" aria-label="superpm loop">
+        <div class="route-step pass"><b>01 Capture</b><span>domain + artifact</span></div>
+        <div class="route-step pass"><b>02 Frame</b><span>the real decision</span></div>
+        <div class="route-step pass"><b>03 Draft</b><span>smallest useful artifact</span></div>
+        <div class="route-step red"><b>04 Critic</b><span>risks, independent</span></div>
+        <div class="route-step pass"><b>05 Deliver</b><span>fold risks, then stop</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="domains">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2><span class="en">One command. Ten domains.</span><span class="ko">명령 하나. 열 도메인.</span></h2>
+        <p class="lead en">The request picks the domain; the domain decides which frameworks load. The loop is the same for all of them.</p>
+        <p class="lead ko">요청이 도메인을 고르고, 도메인이 어떤 프레임워크를 불러올지 정합니다. 루프는 모두 동일합니다.</p>
+      </div>
+      <div class="mode-grid">
+        <article class="mode-card reveal">
+          <span class="mode-label">DISCOVER</span>
+          <h3><span class="en">Find what to build.</span><span class="ko">무엇을 만들지 찾습니다.</span></h3>
+          <p class="en">Ideation, risky assumptions, and experiments that de-risk before commitment.</p>
+          <p class="ko">아이디에이션, 리스크 가정, 커밋 전 검증 실험.</p>
+          <div class="mode-pipe"><b>OST</b> · assumptions · prioritize · interviews · metrics</div>
+        </article>
+        <article class="mode-card strategy reveal">
+          <span class="mode-label">STRATEGY</span>
+          <h3><span class="en">Decide where to play.</span><span class="ko">어디서 이길지 정합니다.</span></h3>
+          <p class="en">Strategy canvas, vision, value prop, and pricing - ending in a defensible bet.</p>
+          <p class="ko">전략 캔버스, 비전, 밸류 프로프, 가격 - 방어 가능한 베팅으로 귀결.</p>
+          <div class="mode-pipe"><b>canvas</b> · value prop · lean/BMC · pricing · SWOT/Porter</div>
+        </article>
+        <article class="mode-card execute reveal">
+          <span class="mode-label">EXECUTE</span>
+          <h3><span class="en">Turn strategy into shipped work.</span><span class="ko">전략을 출시로 옮깁니다.</span></h3>
+          <p class="en">Outcomes over output: PRDs, OKRs, roadmaps, stories, and a red-team pass.</p>
+          <p class="ko">아웃풋보다 아웃컴: PRD, OKR, 로드맵, 스토리, red-team.</p>
+          <div class="mode-pipe"><b>PRD</b> · OKRs · roadmap · stories · prioritization</div>
+        </article>
+        <article class="mode-card storyboard reveal">
+          <span class="mode-label">STORYBOARD</span>
+          <h3><span class="en">Spec every screen.</span><span class="ko">모든 화면을 설계서로.</span></h3>
+          <p class="en">화면설계서/기능명세: a wireframe or replica with numbered callouts, a per-element spec beside it. Standalone HTML; uses storyboard-spec if installed.</p>
+          <p class="ko">화면설계서/기능명세: 와이어프레임 또는 실제 화면 재현 + 번호 콜아웃, 옆에 요소별 명세. 단독 HTML, storyboard-spec 있으면 활용.</p>
+          <div class="mode-pipe"><b>화면설계서</b> · wireframe/replica · callouts · 기능명세</div>
+        </article>
+        <article class="mode-card research reveal">
+          <span class="mode-label">RESEARCH</span>
+          <h3><span class="en">Understand the market.</span><span class="ko">시장을 이해합니다.</span></h3>
+          <p class="en">Personas, segments, journeys, and market sizing - grounded in live, keyless market signal (voice of customer), evidence over invention.</p>
+          <p class="ko">페르소나, 세그먼트, 여정, 시장 규모 - 무키 실시간 시장 신호(voice of customer)로 근거화, 추측보다 근거.</p>
+          <div class="mode-pipe"><b>TAM/SAM/SOM</b> · personas · journey · competitor · live signal</div>
+        </article>
+        <article class="mode-card analytics reveal">
+          <span class="mode-label">ANALYTICS</span>
+          <h3><span class="en">Read the data to a decision.</span><span class="ko">데이터를 의사결정으로 읽습니다.</span></h3>
+          <p class="en">NL-to-SQL, cohort curves, and A/B read-outs that end in ship/extend/stop.</p>
+          <p class="ko">자연어→SQL, 코호트 곡선, ship/extend/stop으로 끝나는 A/B 판독.</p>
+          <div class="mode-pipe"><b>NL-&gt;SQL</b> · cohort · A/B significance</div>
+        </article>
+        <article class="mode-card gtm reveal">
+          <span class="mode-label">GTM</span>
+          <h3><span class="en">Get to the right first market.</span><span class="ko">알맞은 첫 시장에 도달합니다.</span></h3>
+          <p class="en">Beachhead, ICP, growth loops, motion, and a sales-ready battlecard.</p>
+          <p class="ko">beachhead, ICP, 그로스 루프, motion, 영업용 배틀카드.</p>
+          <div class="mode-pipe"><b>beachhead</b> · ICP · growth loops · battlecard</div>
+        </article>
+        <article class="mode-card growth reveal">
+          <span class="mode-label">GROWTH</span>
+          <h3><span class="en">Position it and pick the metric.</span><span class="ko">포지셔닝하고 지표를 고릅니다.</span></h3>
+          <p class="en">Positioning (Dunford), value-prop statements, naming, and a North Star.</p>
+          <p class="ko">포지셔닝(Dunford), 밸류프롭 문구, 네이밍, North Star.</p>
+          <div class="mode-pipe"><b>positioning</b> · naming · North Star metric</div>
+        </article>
+        <article class="mode-card toolkit reveal">
+          <span class="mode-label">TOOLKIT</span>
+          <h3><span class="en">Career and document help.</span><span class="ko">커리어와 문서를 돕습니다.</span></h3>
+          <p class="en">Resume review (XYZ+S), NDA and privacy drafts, and proofreading.</p>
+          <p class="ko">이력서 리뷰(XYZ+S), NDA·개인정보 초안, 교정.</p>
+          <div class="mode-pipe"><b>resume</b> · NDA · privacy · proofread</div>
+        </article>
+        <article class="mode-card aiship reveal">
+          <span class="mode-label">AI-SHIP</span>
+          <h3><span class="en">Own the AI-built code.</span><span class="ko">AI가 짠 코드를 책임집니다.</span></h3>
+          <p class="en">Shipping artifacts and the intended-vs-implemented gap, with cited evidence.</p>
+          <p class="ko">shipping artifacts와 intended-vs-implemented 갭을 근거 인용과 함께.</p>
+          <div class="mode-pipe"><b>shipping artifacts</b> · intended-vs-implemented</div>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="gates">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2><span class="en">Not a template to fill. Five principles.</span><span class="ko">채워 넣는 템플릿이 아니라, 다섯 가지 원칙.</span></h2>
+        <p class="lead en">A short contract applied every run, so the artifact serves a decision instead of decorating a slide.</p>
+        <p class="lead ko">매 실행에 적용되는 짧은 계약입니다. 산출물이 슬라이드를 꾸미는 대신 의사결정에 봉사합니다.</p>
+      </div>
+      <div class="gate-grid">
+        <article class="gate-item reveal"><span class="gate-no">1</span><h3><span class="en">Serve the real decision</span><span class="ko">실제 의사결정에 봉사</span></h3><p class="en">Every artifact answers a decision someone will act on. Name that decision before drafting.</p><p class="ko">모든 산출물은 누군가 행동할 의사결정에 답합니다. 작성 전에 그 결정을 먼저 적습니다.</p></article>
+        <article class="gate-item reveal"><span class="gate-no">2</span><h3><span class="en">Smallest useful artifact</span><span class="ko">가장 작은 유용한 산출물</span></h3><p class="en">Apply only the frameworks the decision needs. A framework filled in for its own sake is waste.</p><p class="ko">의사결정에 필요한 프레임워크만 적용합니다. 그 자체를 위해 채운 프레임워크는 낭비입니다.</p></article>
+        <article class="gate-item reveal"><span class="gate-no">3</span><h3><span class="en">Ground claims in evidence</span><span class="ko">주장은 근거 위에</span></h3><p class="en">Numbers, quotes, and segments come from data or a labeled assumption - never invented.</p><p class="ko">숫자·인용·세그먼트는 데이터나 표기된 가정에서 나옵니다. 지어내지 않습니다.</p></article>
+        <article class="gate-item reveal"><span class="gate-no">4</span><h3><span class="en">Surface hidden assumptions</span><span class="ko">숨은 가정 표면화</span></h3><p class="en">An independent critic names the unstated assumptions and missing pieces as risks before delivery.</p><p class="ko">독립 critic이 전달 전 말하지 않은 가정과 누락을 risk로 적발합니다.</p></article>
+        <article class="gate-item reveal"><span class="gate-no">5</span><h3><span class="en">Hard stops</span><span class="ko">멈춰야 할 곳에서 멈춤</span></h3><p class="en">Publishing, sending, or posting to a tracker needs consent. Never present an assumption as a fact.</p><p class="ko">발행·전송·트래커 게시는 동의를 구합니다. 가정을 사실로 제시하지 않습니다.</p></article>
+      </div>
+    </div>
+  </section>
+
+  <section id="vault">
+    <div class="wrap vault">
+      <div class="reveal">
+        <h2><span class="en">Self-contained references. Load what the domain needs.</span><span class="ko">자기완결 reference. 도메인에 필요한 것만 불러옵니다.</span></h2>
+        <p class="lead en">The 68 upstream skills are compressed into 9 domain references, plus a screen-design route - no runtime dependency. The SKILL.md spine routes the ask; only the matching reference and the two shared gates load.</p>
+        <p class="lead ko">68개 업스트림 스킬을 9개 도메인 reference로 압축하고, 화면설계 라우트를 더했습니다 - 런타임 의존 없음. SKILL.md 스파인이 요청을 라우팅하고, 해당 reference와 공유 게이트 둘만 로드합니다.</p>
+        <div class="file-list">
+          <div class="file-chip"><code>SKILL.md</code><span class="en">spine: principles, intent table, loop</span><span class="ko">스파인: 원칙, intent 테이블, 루프</span></div>
+          <div class="file-chip"><code>reference/intent.md</code><span class="en">classify + &le;5Q interview gate</span><span class="ko">분류 + 최대 5문항 인터뷰 게이트</span></div>
+          <div class="file-chip"><code>reference/critic.md</code><span class="en">independent red-team gate</span><span class="ko">독립 red-team 게이트</span></div>
+          <div class="file-chip"><code>reference/signal.md</code><span class="en">live market signal - keyless, read-only</span><span class="ko">실시간 시장 신호 - 무키, 읽기 전용</span></div>
+          <div class="file-chip"><code>reference/&lt;domain&gt;.md</code><span class="en">10 framework libraries</span><span class="ko">10개 프레임워크 라이브러리</span></div>
+          <div class="file-chip"><code>templates/</code><span class="en">PRD · canvas · OST · battlecard · storyboard</span><span class="ko">PRD · 캔버스 · OST · 배틀카드 · 스토리보드</span></div>
+          <div class="file-chip"><code>docs/DESIGN.md</code><span class="en">the supergoal -&gt; superpm mapping</span><span class="ko">supergoal -&gt; superpm 매핑</span></div>
+        </div>
+      </div>
+<pre class="vault-ascii reveal">loop/
+  capture  domain + artifact
+  frame    the real decision
+  draft    smallest useful artifact
+  critic   risks, independent
+  deliver  fold risks, then stop
+
+No invented numbers. Evidence or assumption.</pre>
+    </div>
+  </section>
+
+  <section id="proof">
+    <div class="wrap">
+      <div class="section-head reveal">
+        <h2><span class="en">What the critic catches.</span><span class="ko">critic이 잡아내는 것.</span></h2>
+        <p class="lead en">The same gate, shaped by the domain. Three of the ten:</p>
+        <p class="lead ko">같은 게이트가 도메인에 맞춰 형태를 바꿉니다. 열 중 셋:</p>
+      </div>
+      <div class="proof-grid">
+        <article class="proof-item reveal">
+          <span class="tag">EXECUTE</span>
+          <h3><span class="en">A PRD with no success metric.</span><span class="ko">성공지표 없는 PRD.</span></h3>
+          <p class="en">The critic flags a missing Success Metrics section as a blocker - the ship/no-ship call depends on it - and explicit non-goals before the PRD is accepted.</p>
+          <p class="ko">critic은 누락된 성공지표 섹션을 blocker로 적발합니다. 출시 판단이 거기 달려 있기 때문입니다. non-goal 명시도 PRD 수용 전에 요구합니다.</p>
+        </article>
+        <article class="proof-item research reveal">
+          <span class="tag">RESEARCH</span>
+          <h3><span class="en">An unsourced TAM.</span><span class="ko">출처 없는 TAM.</span></h3>
+          <p class="en">A "$4B market" with no source is the classic blocker. The critic demotes it to a labeled assumption or derives it bottom-up from segment size x ARPU.</p>
+          <p class="ko">출처 없는 "40억 달러 시장"은 전형적 blocker입니다. critic은 이를 표기된 가정으로 강등하거나 세그먼트 규모 x ARPU로 bottom-up 산출합니다.</p>
+        </article>
+        <article class="proof-item analytics reveal">
+          <span class="tag">ANALYTICS</span>
+          <h3><span class="en">A winner declared on a peeked test.</span><span class="ko">엿본 테스트로 선언된 승자.</span></h3>
+          <p class="en">The critic requires a power/sample check before any significance claim, and forces the read-out to end in an explicit ship, extend, or stop.</p>
+          <p class="ko">critic은 유의성 주장 전에 power/표본 체크를 요구하고, 판독이 ship·extend·stop 중 하나로 명시되게 합니다.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="install">
+    <div class="wrap install">
+      <div class="terminal reveal">
+        <div class="terminal-bar"><i></i><i></i><i></i></div>
+<pre class="en"><span class="c-soft"># clone the skill</span>
+git clone https://github.com/cskwork/superpm-skill.git
+
+<span class="c-soft"># symlink keeps updates simple</span>
+ln -s "$(pwd)/superpm-skill" &lt;your-agent-skills-dir&gt;/superpm
+
+<span class="c-soft"># then, in your agent CLI</span>
+<span class="c-cyan">/superpm</span> write a PRD for in-app referral</pre>
+<pre class="ko"><span class="c-soft"># 스킬 클론</span>
+git clone https://github.com/cskwork/superpm-skill.git
+
+<span class="c-soft"># 심링크하면 업데이트가 쉽습니다</span>
+ln -s "$(pwd)/superpm-skill" &lt;your-agent-skills-dir&gt;/superpm
+
+<span class="c-soft"># 그다음 사용하는 agent CLI에서</span>
+<span class="c-cyan">/superpm</span> 인앱 추천 기능 PRD 써줘</pre>
+      </div>
+      <div class="install-card reveal">
+        <h2><span class="en">One skill.<br>Ten domains.<br>No marketplace.</span><span class="ko">스킬 하나.<br>도메인 열.<br>마켓플레이스 없음.</span></h2>
+        <p class="en">This repo is the skill. Clone it, link it, and hand one PM ask to `/superpm`.</p>
+        <p class="ko">이 저장소가 곧 스킬입니다. 클론하고 연결한 뒤, `/superpm`에 PM 요청 하나를 맡기세요.</p>
+        <div class="pill-row">
+          <span class="pill">Agent CLI</span>
+          <span class="pill">EN / KO</span>
+          <span class="pill">68 frameworks</span>
+          <span class="pill">independent critic</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span><span class="en">PM frameworks from phuryn/pm-skills. Workflow and verification adapted from supergoal. Live-signal method from last30days; keyless read techniques from Agent-Reach.</span><span class="ko">PM 프레임워크는 phuryn/pm-skills, 워크플로와 검증은 supergoal. 실시간 신호 방법은 last30days, 무키 읽기 기법은 Agent-Reach.</span></span>
+    <a href="#top"><span class="en">Back to top</span><span class="ko">맨 위로</span></a>
+  </div>
+</footer>
+
+<script>
+  (function () {
+    var root = document.documentElement;
+    var langButtons = Array.prototype.slice.call(document.querySelectorAll("[data-lang]"));
+    var fsButtons = Array.prototype.slice.call(document.querySelectorAll("[data-fs]"));
+    var storedLang = localStorage.getItem("superpm-lang");
+    var storedFs = Number(localStorage.getItem("superpm-fs") || "1");
+    var lang = storedLang || ((navigator.language || "").toLowerCase().startsWith("ko") ? "ko" : "en");
+    var fs = Math.min(1.18, Math.max(.92, storedFs || 1));
+
+    function syncLang(next) {
+      lang = next === "ko" ? "ko" : "en";
+      root.lang = lang;
+      localStorage.setItem("superpm-lang", lang);
+      langButtons.forEach(function (button) {
+        button.setAttribute("aria-pressed", button.dataset.lang === lang ? "true" : "false");
+      });
+    }
+
+    function syncFs(next) {
+      fs = Math.min(1.18, Math.max(.92, next));
+      root.style.setProperty("--fs", fs.toFixed(2));
+      localStorage.setItem("superpm-fs", String(fs));
+      fsButtons.forEach(function (button) {
+        if (button.dataset.fs === "dec") button.disabled = fs <= .93;
+        if (button.dataset.fs === "inc") button.disabled = fs >= 1.17;
+      });
+    }
+
+    langButtons.forEach(function (button) {
+      button.addEventListener("click", function () { syncLang(button.dataset.lang); });
+    });
+    fsButtons.forEach(function (button) {
+      button.addEventListener("click", function () {
+        syncFs(fs + (button.dataset.fs === "inc" ? .08 : -.08));
+      });
+    });
+    syncLang(lang);
+    syncFs(fs);
+  })();
+
+  (function () {
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var reveals = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
+    if (!("IntersectionObserver" in window) || reduce) {
+      reveals.forEach(function (item) { item.classList.add("is-visible"); });
+      return;
+    }
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("is-visible");
+          observer.unobserve(entry.target);
+        }
+      });
+    }, { threshold: .12 });
+    reveals.forEach(function (item, index) {
+      item.style.transitionDelay = Math.min(index % 4, 3) * 70 + "ms";
+      observer.observe(item);
+    });
+  })();
+
+  (function () {
+    var canvas = document.getElementById("proof-map");
+    if (!canvas) return;
+    var ctx = canvas.getContext("2d");
+    if (!ctx) return;
+    var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    var dpr = Math.min(window.devicePixelRatio || 1, 2);
+    var nodes = [
+      { x: .10, y: .30, label: "Capture" },
+      { x: .29, y: .19, label: "Frame" },
+      { x: .50, y: .37, label: "Draft" },
+      { x: .71, y: .21, label: "Critic" },
+      { x: .90, y: .33, label: "Deliver" }
+    ];
+
+    function resize() {
+      var rect = canvas.getBoundingClientRect();
+      canvas.width = Math.max(1, Math.floor(rect.width * dpr));
+      canvas.height = Math.max(1, Math.floor(rect.height * dpr));
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      draw(performance.now());
+    }
+
+    function point(node) {
+      var w = canvas.clientWidth;
+      var h = canvas.clientHeight;
+      return { x: node.x * w, y: node.y * h };
+    }
+
+    function line(a, b, color, width) {
+      ctx.beginPath();
+      ctx.moveTo(a.x, a.y);
+      ctx.lineTo(b.x, b.y);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.stroke();
+    }
+
+    function draw(t) {
+      var w = canvas.clientWidth;
+      var h = canvas.clientHeight;
+      ctx.clearRect(0, 0, w, h);
+
+      var gradient = ctx.createLinearGradient(0, 0, w, h);
+      gradient.addColorStop(0, "rgba(157,139,255,.20)");
+      gradient.addColorStop(.42, "rgba(63,220,182,.12)");
+      gradient.addColorStop(1, "rgba(106,166,255,.08)");
+      ctx.fillStyle = gradient;
+      ctx.fillRect(0, 0, w, h);
+
+      ctx.save();
+      ctx.globalAlpha = .14;
+      ctx.strokeStyle = "rgba(231,233,251,.12)";
+      ctx.lineWidth = 1;
+      for (var x = -80; x < w + 160; x += 92) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x - 140, h);
+        ctx.stroke();
+      }
+      for (var y = 30; y < h; y += 92) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(w, y + 110);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      var pts = nodes.map(point);
+      for (var i = 0; i < pts.length - 1; i += 1) {
+        line(pts[i], pts[i + 1], "rgba(157,139,255,.30)", 1.2);
+      }
+      line(pts[0], pts[3], "rgba(63,220,182,.18)", 1);
+      line(pts[1], pts[4], "rgba(106,166,255,.16)", 1);
+
+      var phase = reduce ? .52 : ((t / 2400) % 1);
+      for (var j = 0; j < pts.length - 1; j += 1) {
+        var a = pts[j];
+        var b = pts[j + 1];
+        var offset = (phase + j * .16) % 1;
+        var px = a.x + (b.x - a.x) * offset;
+        var py = a.y + (b.y - a.y) * offset;
+        ctx.beginPath();
+        ctx.arc(px, py, 4.2, 0, Math.PI * 2);
+        ctx.fillStyle = j === 3 ? "rgba(255,125,107,.9)" : "rgba(157,139,255,.92)";
+        ctx.shadowColor = ctx.fillStyle;
+        ctx.shadowBlur = 18;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      pts.forEach(function (p, index) {
+        ctx.beginPath();
+        ctx.arc(p.x, p.y, 18, 0, Math.PI * 2);
+        ctx.fillStyle = index === 3 ? "rgba(255,125,107,.18)" : "rgba(13,15,28,.72)";
+        ctx.strokeStyle = index === 3 ? "rgba(255,125,107,.7)" : "rgba(157,139,255,.72)";
+        ctx.lineWidth = 1.5;
+        ctx.fill();
+        ctx.stroke();
+
+        ctx.font = "700 11px SFMono-Regular, Consolas, monospace";
+        ctx.fillStyle = "rgba(244,247,251,.72)";
+        ctx.fillText(nodes[index].label, p.x + 24, p.y + 4);
+      });
+    }
+
+    function loop(t) {
+      draw(t);
+      if (!reduce) requestAnimationFrame(loop);
+    }
+
+    window.addEventListener("resize", resize, { passive: true });
+    resize();
+    if (!reduce) requestAnimationFrame(loop);
+  })();
+</script>
+</body>
+</html>
