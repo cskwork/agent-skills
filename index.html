@@ -6,7 +6,7 @@
 <title>agent-skills — one repo of tools for Claude Code, Codex, OpenCode, Pi and Hermes</title>
 <meta name="description" content="cskwork's personal agent-skill library. One repo is the source of truth; npx skills hangs every tool in every harness with one line.">
 <meta property="og:title" content="agent-skills — cskwork's shop board">
-<meta property="og:description" content="23 agent skills. One install line hangs them all.">
+<meta property="og:description" content="24 agent skills. One install line hangs them all.">
 <meta name="color-scheme" content="light">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='4' fill='%23ebe7dc'/%3E%3Ccircle cx='8' cy='8' r='2' fill='%235a564d'/%3E%3Ccircle cx='24' cy='8' r='2' fill='%235a564d'/%3E%3Ccircle cx='8' cy='24' r='2' fill='%235a564d'/%3E%3Ccircle cx='24' cy='24' r='2' fill='%235a564d'/%3E%3Crect x='13' y='6' width='6' height='20' rx='2' fill='%23151412'/%3E%3C/svg%3E">
 <style>
@@ -409,7 +409,7 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-
     <ul class="tools" id="tools">
       <li class="tool" style="--i:0" data-name="verification-before-completion" data-tool="Spirit level" data-uses="78" data-desc="Use before claiming work is complete, fixed, or passing: run the verification commands and read the output before any success claim. Evidence before assertions, always."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-level"/></svg><span class="name">verification-before-completion</span><span class="uses" aria-hidden="true">78</span></button></li>
       <li class="tool" style="--i:1" data-name="gh-release" data-tool="Hammer" data-uses="37" data-desc="Cut a versioned GitHub release: tag, push, and publish release notes from the changelog. “Do a release”, “release vX”, “릴리스 해줘”."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-hammer"/></svg><span class="name">gh-release</span><span class="uses" aria-hidden="true">37</span></button></li>
-      <li class="tool" style="--i:2" data-name="unslop" data-tool="Scissors" data-uses="17" data-desc="Cut AI tells from any writing. Must always apply."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-scissors"/></svg><span class="name">unslop</span><span class="uses" aria-hidden="true">17</span></button></li>
+      <li class="tool" style="--i:2" data-name="unslop" data-tool="Scissors" data-uses="17" data-desc="Optional prose editor, used only when explicitly requested. Humanizer is the default."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-scissors"/></svg><span class="name">unslop</span><span class="uses" aria-hidden="true">17</span></button></li>
       <li class="tool" style="--i:3" data-name="call-agent" data-tool="Two-way radio" data-uses="17" data-desc="Delegate a bounded task to a user-named peer CLI, or fill a capability the host lacks. Codex, Claude, Antigravity, Kiro, NotebookLM, ChatGPT Pro."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-radio"/></svg><span class="name">call-agent</span><span class="uses" aria-hidden="true">17</span></button></li>
       <li class="tool" style="--i:4" data-name="browser-qa" data-tool="Flashlight" data-uses="11" data-desc="Browser QA with reviewable YAML scenarios, engine selection, and browser/API evidence. URL checks, regression runs, recording, scheduling, dashboards."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-flashlight"/></svg><span class="name">browser-qa</span><span class="uses" aria-hidden="true">11</span></button></li>
       <li class="tool" style="--i:5" data-name="diagnose" data-tool="Magnifier" data-uses="11" data-desc="Disciplined diagnosis loop for hard bugs and performance regressions: reproduce, minimise, hypothesise, instrument, fix, regression-test."><button type="button" aria-expanded="false"><svg class="hook" aria-hidden="true"><use href="#hook"/></svg><svg class="shape" aria-hidden="true"><use href="#t-magnifier"/></svg><span class="name">diagnose</span><span class="uses" aria-hidden="true">11</span></button></li>
@@ -446,11 +446,11 @@ footer .links{display:flex;gap:18px;flex-wrap:wrap;font-family:var(--mono);font-
       <h2 id="drawers-title">Three drawers. <span>Pull the one you need.</span></h2>
       <ul class="drawers">
         <li class="drawer">
-          <div><span class="label">core</span><span class="count">14 skills · the default set</span><p>The verification loop, diagnosis, release, delegation, browser QA, the SDLC gates and the writing tools. What a working machine needs on day one.</p></div>
+          <div><span class="label">core</span><span class="count">14 skills · the default set</span><p>The verification loop, diagnosis, release, delegation, browser QA, SDLC and <a href="https://github.com/blader/humanizer">Humanizer</a> as the default writing skill.</p></div>
           <div class="pull"><code id="cmd-core">./install.sh -p core</code><button class="copy" type="button" data-copy="#cmd-core">Copy</button></div>
         </li>
         <li class="drawer">
-          <div><span class="label">all</span><span class="count">23 skills · everything on the board</span><p>Every tool above, including the image, Naver, Stream Deck and PM tools.</p></div>
+          <div><span class="label">all</span><span class="count">24 skills · the full library</span><p>Every tool above, including the image, Naver, Stream Deck and PM tools.</p></div>
           <div class="pull"><code id="cmd-all">./install.sh -p all</code><button class="copy" type="button" data-copy="#cmd-all">Copy</button></div>
         </li>
         <li class="drawer">

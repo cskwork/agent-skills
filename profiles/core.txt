@@ -5,7 +5,7 @@ refine-skill-terse
 skill-cleanup
 skill-usage-stats
 sync-skill
-unslop
+humanizer
 verification-planning
 sdlc-kit
 verification-before-completion

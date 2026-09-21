@@ -1,6 +1,6 @@
 ---
 name: unslop
-description: Cut AI tells from any writing. Must always apply.
+description: Remove AI writing patterns when the user explicitly requests unslop. Use humanizer as the default prose-editing skill.
 ---
 
 # Unslop

@@ -22,3 +22,4 @@ impeccable
 gpt-image-2
 agent-browser
 skill-lab
+humanizer

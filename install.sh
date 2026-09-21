@@ -43,4 +43,13 @@ if [ "$THIRD_PARTY" = 1 ]; then
   while read -r repo skills; do add "$repo" $skills; done < <(read_list "$HERE/profiles/third-party.txt")
 fi
 
+# The default profile also installs the shared writing policy when Humanizer is available.
+if read_list "$PROFILE_FILE" | grep -qx humanizer; then
+  if [ -s "$HOME/.agents/skills/humanizer/SKILL.md" ]; then
+    node "$HERE/scripts/install-writing-rule.mjs" "$HOME/.agents/rules"
+  else
+    echo "warn: humanizer is unavailable; writing policy was not changed" >&2
+  fi
+fi
+
 echo "done. verify with: npx skills ls -g"

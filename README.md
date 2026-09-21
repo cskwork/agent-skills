@@ -30,6 +30,21 @@ git clone https://github.com/cskwork/agent-skills ~/.agents/sources/cskwork/agen
 `npx skills` keeps a git clone in `~/.agents/sources/cskwork/agent-skills` and symlinks
 `~/.claude/skills/<name>` (etc.) to it. Do not keep per-harness copies.
 
+## Default writing skill
+
+`humanizer` is included in the default `core` profile and in `all`. Its upstream
+SKILL.md and MIT license are vendored from [blader/humanizer](https://github.com/blader/humanizer).
+`unslop` remains in `all` for explicit use; it no longer runs by default.
+
+`install.sh` installs `rules/writing.md` into `~/.agents/rules/` and adds a small
+managed block to `rules.md`, preserving unrelated rules. Existing writing rules
+are backed up if they differ. Direct `npx skills add` installs only the skill;
+to install the policy as well, run:
+
+```sh
+node scripts/install-writing-rule.mjs ~/.agents/rules
+```
+
 ## Daily use
 
 ```bash
